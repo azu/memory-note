@@ -27,6 +27,7 @@
     "webpack-cli": "^4.7.0"
   },
   "dependencies": {
+    "@cfworker/uuid": "^1.8.3",
     "dayjs": "^1.10.6",
     "sunder": "^0.7.2",
     "worktop": "^0.7.1"

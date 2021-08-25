@@ -49,7 +49,7 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ timestamp: Date.now(), message: 'test' }),
+      body: JSON.stringify({ date: new Date().toISOString(), message: 'test mmm' }),
     })
   })
 </script>

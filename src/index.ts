@@ -1,4 +1,4 @@
-import { Note, readNotes, readNotesInRange, writeNote } from "./note/Note";
+import { deleteNote, NoteArguments, readNotes, readNotesInRange, writeNote } from "./note/Note";
 import { Handler, Router } from "worktop";
 import * as Cache from "worktop/cache";
 import * as CORS from "worktop/cors";
@@ -37,11 +37,19 @@ API.add("GET", "/notes/recent/:range", async (req, res) => {
     res.send(200, notes);
 });
 API.add("POST", "/notes/new", async (req, res) => {
-    const note = await req.body<Note>();
+    const note = await req.body<NoteArguments>();
     if (!note) {
         return res.send(400, "invalid note");
     }
     await writeNote(note);
+    res.send(200, { ok: true });
+});
+API.add("DELETE", "/notes/:id", async (req, res) => {
+    const nodeId = req.params.id;
+    if (!nodeId) {
+        return res.send(400, "invalid node.id");
+    }
+    await deleteNote(nodeId);
     res.send(200, { ok: true });
 });
 
