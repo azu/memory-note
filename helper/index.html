@@ -7,6 +7,7 @@
 <body>
 <button id='post'>Post Today</button>
 <button id='read'>Read Today</button>
+<button id='read-range'>Read Range</button>
 <div id='output'></div>
 <script type='module'>
   function formatDate(dt) {
@@ -20,6 +21,17 @@
   document.querySelector('#read').addEventListener('click', async () => {
     const YYYY_MM_DD = formatDate(new Date())
     const items = await fetch(`http://127.0.0.1:8787/notes/${YYYY_MM_DD}?token=${token}`).then(res => res.json())
+    const output = document.querySelector('#output')
+    output.innerHTML = ''
+    items.forEach(item => {
+      const li = document.createElement('li')
+      li.textContent = `${item.message} @ ${new Date(item.timestamp).toISOString()}`
+      output.append(li)
+    })
+  });
+  document.querySelector('#read-range').addEventListener('click', async () => {
+    const YYYY_MM_DD = formatDate(new Date())
+    const items = await fetch(`http://127.0.0.1:8787/notes/recent/3?token=${token}`).then(res => res.json())
     const output = document.querySelector('#output')
     output.innerHTML = ''
     items.forEach(item => {

@@ -1,4 +1,4 @@
-import { Note, readNotes, writeNote } from "./note/Note";
+import { Note, readNotes, readNotesInRange, writeNote } from "./note/Note";
 import { Handler, Router } from "worktop";
 import * as Cache from "worktop/cache";
 import * as CORS from "worktop/cors";
@@ -26,6 +26,14 @@ API.prepare = (req, res) => {
 
 API.add("GET", "/notes/:YYYYMMDD", async (req, res) => {
     const notes = await readNotes(req.params.YYYYMMDD);
+    res.send(200, notes);
+});
+API.add("GET", "/notes/recent/:range", async (req, res) => {
+    const rangeValue = Number(req.params.range);
+    if (rangeValue < 0 || rangeValue > 30) {
+        return res.send(400, "invalid range: 0 ~ 30");
+    }
+    const notes = await readNotesInRange(rangeValue);
     res.send(200, notes);
 });
 API.add("POST", "/notes/new", async (req, res) => {
