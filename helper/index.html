@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <title>Post</title>
+</head>
+<body>
+<button id='post'>Post Today</button>
+<button id='read'>Read Today</button>
+<div id='output'></div>
+<script type='module'>
+  function formatDate(dt) {
+    var y = dt.getFullYear()
+    var m = ('00' + (dt.getMonth() + 1)).slice(-2)
+    var d = ('00' + dt.getDate()).slice(-2)
+    return (y + '-' + m + '-' + d)
+  }
+
+  const token = new URL(location.href).searchParams.get('token')
+  document.querySelector('#read').addEventListener('click', async () => {
+    const YYYY_MM_DD = formatDate(new Date())
+    const items = await fetch(`http://127.0.0.1:8787/notes/${YYYY_MM_DD}?token=${token}`).then(res => res.json())
+    const output = document.querySelector('#output')
+    output.innerHTML = ''
+    items.forEach(item => {
+      const li = document.createElement('li')
+      li.textContent = `${item.message} @ ${new Date(item.timestamp).toISOString()}`
+      output.append(li)
+    })
+  })
+</script>
+<script type='module'>
+  const token = new URL(location.href).searchParams.get('token');
+  document.querySelector('#post').addEventListener('click', () => {
+    fetch(`http://127.0.0.1:8787/notes/new?token=${token}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ timestamp: Date.now(), message: 'test' }),
+    })
+  })
+</script>
+</body>
+</html>

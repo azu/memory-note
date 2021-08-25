@@ -1,0 +1,45 @@
+{
+  "name": "worker-typescript-template",
+  "version": "1.0.0",
+  "description": "Cloudflare worker TypeScript template",
+  "main": "dist/worker.js",
+  "scripts": {
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "test": "jest --config jestconfig.json --verbose",
+    "prepare": "git config --local core.hooksPath .githooks"
+  },
+  "author": "author",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^2.2.2",
+    "@types/jest": "^26.0.23",
+    "@types/service-worker-mock": "^2.0.1",
+    "jest": "^27.0.1",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2",
+    "service-worker-mock": "^2.0.5",
+    "ts-jest": "^27.0.1",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.6",
+    "sunder": "^0.7.2",
+    "worktop": "^0.7.1"
+  },
+  "prettier": {
+    "singleQuote": false,
+    "printWidth": 120,
+    "tabWidth": 4,
+    "trailingComma": "none"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write"
+    ]
+  }
+}
