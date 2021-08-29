@@ -66,7 +66,6 @@ export const createMemoryNote = (middlewares: { prePushNote: PrePushNote; postPo
             tags: note.tags ?? [],
             timestamp
         });
-        console.log("newNote", newNote);
         const nextNotes = [newNote].concat(currentNotes);
         await updateNotes(INBOX_KEY, nextNotes);
     };
