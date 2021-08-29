@@ -66,6 +66,7 @@ export const createMemoryNote = (middlewares: { prePushNote: PrePushNote; postPo
             tags: note.tags ?? [],
             timestamp
         });
+        console.log("newNote", newNote);
         const nextNotes = [newNote].concat(currentNotes);
         await updateNotes(INBOX_KEY, nextNotes);
     };
@@ -83,8 +84,16 @@ export const createMemoryNote = (middlewares: { prePushNote: PrePushNote; postPo
     };
 
     const editNote = async (nodeId: string, note: NoteArguments): Promise<boolean> => {
+        const currentNotes = await readNotes(INBOX_KEY);
+        const currentNote = currentNotes.find((note) => note.id === nodeId);
+        if (!currentNote) {
+            return false;
+        }
         await deleteNote(nodeId);
-        await pushNote(note);
+        await pushNote({
+            ...currentNote,
+            ...note
+        });
         return true;
     };
 
