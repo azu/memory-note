@@ -1,82 +1,103 @@
 import { uuid } from "@cfworker/uuid";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 
-dayjs.extend(utc);
-
+/**
+ * Note stack Architecture
+ *
+ * # Add a new Note
+ *
+ * New Note
+ *      ↓ Input = Push
+ * ------------
+ * |   Note   |
+ * |   Note   |
+ * |   Note   |
+ * ------------- stack size limit
+ * |  Note is flood |
+ *     ↓ Output = Popup
+ *
+ * # Edit a Note
+ *
+ * 1. pop Note B
+ * 2. push new Note B2 which has edited data
+ *
+ *      ↓ Input = Push
+ * ------------
+ * |   Note A   |
+ * |   Note B |  → Output = Pop
+ * |   Note C |
+ * -------------
+ *
+ * →
+ *
+ * ------------
+ * |   Note B2  |
+ * |   Note A   |
+ * |   Note C  |
+ * ------------- stack size limit
+ */
+// pushed note
+export type PrePushNote = (inputNode: SavedNote) => SavedNote | Promise<SavedNote>;
+// popped nte
+export type PostPoppedNote = (inputNode: SavedNote) => unknown | Promise<unknown>;
 type SavedNote = {
     id: string;
     timestamp: number;
     message: string;
+    tags: string[];
 };
-type NoteWithTimeStamp = {
-    // unix timestamp
-    timestamp: number;
+export type NoteArguments = {
     message: string;
+    tags?: string[];
 };
-type NoteWithDate = {
-    // iso date
-    date: string;
-    message: string;
-};
-export type NoteArguments = NoteWithTimeStamp | NoteWithDate;
 declare let MEMORY_NOTE: KVNamespace;
-const isNoteWithTimeStamp = (n: any): n is NoteWithTimeStamp => {
-    return "timestamp" in n;
+const INBOX_KEY = "list:inbox";
+const updateNotes = async (key: string, notes: SavedNote[]): Promise<void> => {
+    return await MEMORY_NOTE.put(key, JSON.stringify(notes));
 };
-export const writeNote = async (note: NoteArguments) => {
-    const key = dayjs(isNoteWithTimeStamp(note) ? note.timestamp : note.date)
-        .utc()
-        .format("YYYY-MM-DD");
-    const oldNodes = (await readNotes(key)) ?? [];
-    const normalizedNode: SavedNote = isNoteWithTimeStamp(note)
-        ? {
-              id: uuid(),
-              ...note
-          }
-        : {
-              id: uuid(),
-              message: note.message,
-              timestamp: new Date(note.date).getTime()
-          };
-    await updateNotes(key, [normalizedNode].concat(oldNodes));
+const readNotes = async (key: string): Promise<SavedNote[]> => {
+    return JSON.parse((await MEMORY_NOTE.get(key)) ?? "[]");
 };
+export const createMemoryNote = (middlewares: { prePushNote: PrePushNote; postPoppedNote: PostPoppedNote }) => {
+    const pushNote = async (note: NoteArguments, timestamp: number = Date.now()) => {
+        const currentNotes = await readNotes(INBOX_KEY);
+        const newNote: SavedNote = await middlewares.prePushNote({
+            id: uuid(),
+            message: note.message,
+            tags: note.tags ?? [],
+            timestamp
+        });
+        console.log("newNote", newNote);
+        const nextNotes = [newNote].concat(currentNotes);
+        await updateNotes(INBOX_KEY, nextNotes);
+    };
 
-export const readNotesInRange = async (range: number): Promise<SavedNote[]> => {
-    const today = dayjs().utc();
-    const promise = await Promise.all(
-        Array.from({ length: range })
-            .fill(0)
-            .map((_, index) => {
-                const current = today.subtract(index, "day");
-                const key = current.format("YYYY-MM-DD");
-                return readNotes(key);
-            })
-    );
-    return promise.flat();
-};
-export const updateNotes = async (key: string, notes: SavedNote[]): Promise<void> => {
-    return await MEMORY_NOTE.put(`date:${key}`, JSON.stringify(notes));
-};
-export const readNotes = async (key: string): Promise<SavedNote[]> => {
-    return JSON.parse((await MEMORY_NOTE.get(`date:${key}`)) ?? "[]");
-};
-export const readNoteAtDate = async (timestamp: number): Promise<SavedNote[]> => {
-    const key = dayjs(timestamp).utc().format("YYYY-MM-DD");
-    return readNotes(`date:${key}`);
-};
-export const deleteNote = async (nodeId: string): Promise<boolean> => {
-    const today = dayjs();
-    for (let i = 0; i < 20; i++) {
-        const current = today.subtract(i, "day");
-        const key = current.format("YYYY-MM-DD");
-        const notes = await readNotes(key);
-        const index = notes.findIndex((note) => note.id === nodeId);
-        if (index === -1) {
-            notes.splice(index, 1);
-            await updateNotes(key, notes);
+    const deleteNote = async (nodeId: string): Promise<boolean> => {
+        const currentNotes = await readNotes(INBOX_KEY);
+        const index = currentNotes.findIndex((note) => note.id === nodeId);
+        if (index !== -1) {
+            const [poppedNote] = currentNotes.splice(index, 1);
+            await middlewares.postPoppedNote(poppedNote);
+            await updateNotes(INBOX_KEY, currentNotes);
             return true;
         }
-    }
-    return false;
+        return false;
+    };
+
+    const editNote = async (nodeId: string, note: NoteArguments): Promise<boolean> => {
+        await deleteNote(nodeId);
+        await pushNote(note);
+        return true;
+    };
+
+    const readNotesInRange = async (range: number): Promise<SavedNote[]> => {
+        const currentNotes = await readNotes(INBOX_KEY);
+        return currentNotes.slice(0, range);
+    };
+
+    return {
+        pushNote,
+        editNote,
+        deleteNote,
+        readNotes: readNotesInRange
+    };
 };

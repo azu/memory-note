@@ -4,18 +4,48 @@
 
 ### set `API_TOKEN`
 
-```ts
+`API_TOKEN` should be random value. It is used for simple authorization.
+
+```shell
 $ wrangler secret put API_TOKEN
 <INPUT_YOUR_API_TOKEN>
 ```
 
 You need to access your memory note using `?token=<INPUT_YOUR_API_TOKEN>`.
 
+### set `NOTE_STACK_SIZE`
+
+
+
+```shell
+$ wrangler secret put API_TOKEN
+100
+```
+
+## Overview
+
+Two faces
+
+- To do
+- look back
+- Context Todo
+- Programmable Hooks
+- tag?
+
+---
+
+- Add note to Inbox
+- Move note to another list from Inbox
+
 ## API
 
 ### `GET /notes/YYYY-MM-DD?token=<INPUT_YOUR_API_TOKEN>`
 
 Return an array of note at YYYY-MM-DD.
+
+### `GET /notes/recents/:num?token=<INPUT_YOUR_API_TOKEN>`
+
+Return an array of notes.
 
 ### `POST /notes/new?token=<INPUT_YOUR_API_TOKEN>`
 
@@ -52,3 +82,7 @@ or
     "message": "test"
 }
 ```
+
+### `DELETE /notes/:id`
+
+Delete the note.

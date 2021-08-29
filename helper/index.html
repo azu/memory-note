@@ -6,31 +6,11 @@
 </head>
 <body>
 <button id='post'>Post Today</button>
-<button id='read'>Read Today</button>
-<button id='read-range'>Read Range</button>
+<button id='read-range'>Read Recent</button>
 <div id='output'></div>
 <script type='module'>
-  function formatDate(dt) {
-    var y = dt.getFullYear()
-    var m = ('00' + (dt.getMonth() + 1)).slice(-2)
-    var d = ('00' + dt.getDate()).slice(-2)
-    return (y + '-' + m + '-' + d)
-  }
-
   const token = new URL(location.href).searchParams.get('token')
-  document.querySelector('#read').addEventListener('click', async () => {
-    const YYYY_MM_DD = formatDate(new Date())
-    const items = await fetch(`http://127.0.0.1:8787/notes/${YYYY_MM_DD}?token=${token}`).then(res => res.json())
-    const output = document.querySelector('#output')
-    output.innerHTML = ''
-    items.forEach(item => {
-      const li = document.createElement('li')
-      li.textContent = `${item.message} @ ${new Date(item.timestamp).toISOString()}`
-      output.append(li)
-    })
-  });
   document.querySelector('#read-range').addEventListener('click', async () => {
-    const YYYY_MM_DD = formatDate(new Date())
     const items = await fetch(`http://127.0.0.1:8787/notes/recent/3?token=${token}`).then(res => res.json())
     const output = document.querySelector('#output')
     output.innerHTML = ''
@@ -49,7 +29,7 @@
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ date: new Date().toISOString(), message: 'test mmm' }),
+      body: JSON.stringify({ message: 'test mmm' }),
     })
   })
 </script>

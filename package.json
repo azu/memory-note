@@ -1,9 +1,10 @@
 {
-  "name": "worker-typescript-template",
+  "name": "memory-note",
   "version": "1.0.0",
-  "description": "Cloudflare worker TypeScript template",
+  "description": "Fast memory-note on cloudflare worker",
   "main": "dist/worker.js",
   "scripts": {
+    "dev": "wrangler dev",
     "build": "webpack",
     "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
@@ -28,7 +29,6 @@
   },
   "dependencies": {
     "@cfworker/uuid": "^1.8.3",
-    "dayjs": "^1.10.6",
     "sunder": "^0.7.2",
     "worktop": "^0.7.1"
   },
