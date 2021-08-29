@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "description": "Fast memory-note on cloudflare worker",
   "main": "dist/worker.js",
+  "repository": "azu/memory-note",
+  "keywords": [
+    "note",
+    "todo",
+    "reminder",
+    "cloudflare-workers",
+    "API"
+  ],
   "scripts": {
     "dev": "wrangler dev",
     "build": "webpack",
