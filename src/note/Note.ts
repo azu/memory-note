@@ -1,4 +1,4 @@
-import { uuid } from "@cfworker/uuid";
+import { Note, StorageAdapter } from "./StorageAdapter";
 
 /**
  * Note stack Architecture
@@ -35,70 +35,31 @@ import { uuid } from "@cfworker/uuid";
  * |   Note C  |
  * ------------- stack size limit
  */
-// pushed note
-export type PrePushNote = (inputNode: SavedNote) => SavedNote | Promise<SavedNote>;
-// popped nte
-export type PostPoppedNote = (inputNode: SavedNote) => unknown | Promise<unknown>;
-type SavedNote = {
-    id: string;
-    timestamp: number;
-    message: string;
-    tags: string[];
-};
 export type NoteArguments = {
     message: string;
-    tags?: string[];
 };
-declare let MEMORY_NOTE: KVNamespace;
-const INBOX_KEY = "list:inbox";
-const updateNotes = async (key: string, notes: SavedNote[]): Promise<void> => {
-    return await MEMORY_NOTE.put(key, JSON.stringify(notes));
-};
-const readNotes = async (key: string): Promise<SavedNote[]> => {
-    return JSON.parse((await MEMORY_NOTE.get(key)) ?? "[]");
-};
-export const createMemoryNote = (middlewares: { prePushNote: PrePushNote; postPoppedNote: PostPoppedNote }) => {
+export const createMemoryNote = (options: { storage: StorageAdapter }) => {
+    const { storage } = options;
     const pushNote = async (note: NoteArguments, timestamp: number = Date.now()) => {
-        const currentNotes = await readNotes(INBOX_KEY);
-        const newNote: SavedNote = await middlewares.prePushNote({
-            id: uuid(),
-            message: note.message,
-            tags: note.tags ?? [],
+        return storage.appendNote({
+            ...note,
             timestamp
         });
-        console.log("newNote", newNote);
-        const nextNotes = [newNote].concat(currentNotes);
-        await updateNotes(INBOX_KEY, nextNotes);
     };
 
-    const deleteNote = async (nodeId: string): Promise<boolean> => {
-        const currentNotes = await readNotes(INBOX_KEY);
-        const index = currentNotes.findIndex((note) => note.id === nodeId);
-        if (index !== -1) {
-            const [poppedNote] = currentNotes.splice(index, 1);
-            await middlewares.postPoppedNote(poppedNote);
-            await updateNotes(INBOX_KEY, currentNotes);
-            return true;
-        }
-        return false;
-    };
-
-    const editNote = async (nodeId: string, note: NoteArguments): Promise<boolean> => {
-        const currentNotes = await readNotes(INBOX_KEY);
-        const currentNote = currentNotes.find((note) => note.id === nodeId);
-        if (!currentNote) {
-            return false;
-        }
-        await deleteNote(nodeId);
-        await pushNote({
-            ...currentNote,
-            ...note
-        });
+    const deleteNote = async (noteId: string): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(noteId);
         return true;
     };
 
-    const readNotesInRange = async (range: number): Promise<SavedNote[]> => {
-        const currentNotes = await readNotes(INBOX_KEY);
+    const editNote = async (nodeId: string, note: NoteArguments): Promise<boolean> => {
+        await storage.deleteNote(nodeId);
+        await pushNote(note);
+        return true;
+    };
+
+    const readNotesInRange = async (range: number): Promise<Note[]> => {
+        const currentNotes = await storage.getNotes();
         return currentNotes.slice(0, range);
     };
 

@@ -39,10 +39,6 @@ Two faces
 
 ## API
 
-### `GET /notes/YYYY-MM-DD?token=<INPUT_YOUR_API_TOKEN>`
-
-Return an array of note at YYYY-MM-DD.
-
 ### `GET /notes/recents/:num?token=<INPUT_YOUR_API_TOKEN>`
 
 Return an array of notes.

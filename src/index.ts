@@ -2,17 +2,15 @@ import { Handler, Router } from "worktop";
 import * as Cache from "worktop/cache";
 import * as CORS from "worktop/cors";
 import { createMemoryNote, NoteArguments } from "./note/Note";
+import { createCloudflareStorage } from "./note/adapters/cloudflare";
 
 declare var API_TOKEN: string;
 const API = new Router();
-
+declare let MEMORY_NOTE: KVNamespace;
 const memoryNote = createMemoryNote({
-    prePushNote(note) {
-        return note;
-    },
-    postPoppedNote(note) {
-        return;
-    }
+    storage: createCloudflareStorage({
+        kvStorage: MEMORY_NOTE
+    })
 });
 
 const Auth: Handler<{ token: string }> = (req, res) => {
