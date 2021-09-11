@@ -15,7 +15,7 @@ export const Widget: FC<WidgetProps> = ({ notes }) => {
                     right: 0,
                     fontSize: "16px",
                     fontWeight: "bold",
-                    paddingRight: "4px"
+                    paddingRight: "8px"
                 }}
             >
                 {notes.length}
