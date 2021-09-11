@@ -13,9 +13,9 @@ export const Widget: FC<WidgetProps> = ({ notes }) => {
                     position: "fixed",
                     top: 0,
                     right: 0,
-                    fontSize: "16px",
+                    fontSize: "1.2rem",
                     fontWeight: "bold",
-                    paddingRight: "8px"
+                    paddingRight: "1rem"
                 }}
             >
                 {notes.length}
@@ -26,7 +26,7 @@ export const Widget: FC<WidgetProps> = ({ notes }) => {
                     whiteSpace: "nowrap",
                     textOverflow: "ellipsis",
                     overflow: "hidden",
-                    fontSize: "12px",
+                    fontSize: "1rem",
                     padding: "0.5rem 1rem"
                 }}
             >
