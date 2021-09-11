@@ -13,11 +13,12 @@
   ],
   "scripts": {
     "dev": "wrangler dev",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "test": "jest --config jestconfig.json --verbose",
-    "prepare": "git config --local core.hooksPath .githooks"
+    "prepare": "git config --local core.hooksPath .githooks",
+    "deploy": "npm run build && wrangler publish"
   },
   "author": "author",
   "license": "MIT",
