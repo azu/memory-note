@@ -5,7 +5,8 @@
     "target": "esnext",
     "lib": [
       "esnext",
-      "webworker"
+      "webworker",
+      "DOM"
     ],
     "alwaysStrict": true,
     "strict": true,

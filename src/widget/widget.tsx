@@ -1,7 +1,31 @@
-import React from "react";
+import React, { HTMLAttributes, useCallback } from "react";
 import { FC } from "react";
 import { Note } from "../note/StorageAdapter";
 
+const List: FC<HTMLAttributes<HTMLUListElement>> = ({ children, ...props }) => {
+    return (
+        <ul
+            style={{
+                listStyle: "none",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                fontSize: "1rem",
+                padding: "0.5rem 1rem"
+            }}
+            {...props}
+        >
+            {children}
+        </ul>
+    );
+};
+const ListItem: FC<{ note: Note }> = ({ note }) => {
+    return (
+        <li style={{ borderBottom: "1px dotted #ddd", padding: "2px 0", cursor: "pointer" }} data-note-id={note.id}>
+            {note.message}
+        </li>
+    );
+};
 export type WidgetProps = {
     notes: Note[];
 };
@@ -20,24 +44,11 @@ export const Widget: FC<WidgetProps> = ({ notes }) => {
             >
                 {notes.length}
             </div>
-            <ul
-                style={{
-                    listStyle: "none",
-                    whiteSpace: "nowrap",
-                    textOverflow: "ellipsis",
-                    overflow: "hidden",
-                    fontSize: "1rem",
-                    padding: "0.5rem 1rem"
-                }}
-            >
+            <List id={"list"}>
                 {notes.map((note) => {
-                    return (
-                        <li key={note.id} style={{ borderBottom: "1px dotted #ddd", padding: "2px 0" }}>
-                            {note.message}
-                        </li>
-                    );
+                    return <ListItem key={note.id} note={note} />;
                 })}
-            </ul>
+            </List>
         </div>
     );
 };

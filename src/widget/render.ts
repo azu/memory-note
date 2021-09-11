@@ -24,6 +24,30 @@ const toHTML = ({ content, contentTitle }: { content: string; contentTitle: stri
        }
       </style>
     </head>
-    <body>${content}</body>
+    <body>
+      ${content}
+      <script type="module">
+        const deleteNote = (noteId) => {
+            const deleteEndPoint = location.href.replace("/widget", "/" + noteId);
+            return fetch(deleteEndPoint, {
+                method: "DELETE"
+            }).catch((error) => {
+                console.error(error);
+            });
+        };
+        document.querySelector("#list").addEventListener("click", async (event) => {
+            const target = event.target;
+            const noteId = target.dataset.noteId;
+            if(!noteId){
+                return;
+            }
+            const noteTitle = target.textContent;
+            if (window.confirm("Do you want to delete: " + noteTitle)) {
+                await deleteNote(noteId);
+                target.remove();
+            }
+        }, true);
+      </script>
+    </body>
   </html>`;
 };

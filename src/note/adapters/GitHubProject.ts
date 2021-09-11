@@ -41,11 +41,13 @@ const findInboxColumn = (
 export const createGitHubProjectStorage = ({
     owner,
     repo,
-    projectId
+    projectId,
+    deleteMode = "ARCHIVE"
 }: {
     owner: string;
     repo: string;
     projectId: number;
+    deleteMode?: "DELETE" | "ARCHIVE";
 }): StorageAdapter => {
     const octokit = new Octokit({ auth: GITHUB_TOKEN });
     return {
@@ -124,13 +126,24 @@ export const createGitHubProjectStorage = ({
                 }
             });
             const card: { id: number; note: string | null; updated_at: string } = data;
-            // https://docs.github.com/ja/rest/reference/projects#delete-a-project-card
-            await octokit.request("DELETE /projects/columns/cards/{card_id}", {
-                card_id: Number(id), // card_id should be number
-                mediaType: {
-                    previews: ["inertia"]
-                }
-            });
+            if (deleteMode === "ARCHIVE") {
+                // https://docs.github.com/ja/rest/reference/projects#update-an-existing-project-card
+                await octokit.request("PATCH /projects/columns/cards/{card_id}", {
+                    card_id: Number(id),
+                    archived: true,
+                    mediaType: {
+                        previews: ["inertia"]
+                    }
+                });
+            } else {
+                // https://docs.github.com/ja/rest/reference/projects#delete-a-project-card
+                await octokit.request("DELETE /projects/columns/cards/{card_id}", {
+                    card_id: Number(id), // card_id should be number
+                    mediaType: {
+                        previews: ["inertia"]
+                    }
+                });
+            }
             return {
                 id: String(card.id),
                 message: card.note ?? "",
