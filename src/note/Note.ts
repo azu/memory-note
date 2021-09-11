@@ -40,33 +40,50 @@ export type NoteArguments = {
 };
 export const createMemoryNote = (options: { storage: StorageAdapter }) => {
     const { storage } = options;
-    const pushNote = async (note: NoteArguments, timestamp: number = Date.now()) => {
-        return storage.appendNote({
+    const pushNote = async (key: string, note: NoteArguments, timestamp: number = Date.now()) => {
+        return storage.appendNote(key, {
             ...note,
             timestamp
         });
     };
 
-    const deleteNote = async (noteId: string): Promise<boolean> => {
-        const deletedNote = await storage.deleteNote(noteId);
+    const deleteNote = async (key: string, noteId: string): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(key, noteId);
         return true;
     };
 
-    const editNote = async (nodeId: string, note: NoteArguments): Promise<boolean> => {
-        await storage.deleteNote(nodeId);
-        await pushNote(note);
+    const editNote = async (key: string, nodeId: string, note: NoteArguments): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(key, nodeId);
+        await pushNote(key, {
+            ...deletedNote,
+            ...note
+        });
         return true;
     };
 
-    const readNotesInRange = async (range: number): Promise<Note[]> => {
-        const currentNotes = await storage.getNotes();
+    const readNotes = async (key: string, range: number): Promise<Note[]> => {
+        const currentNotes = await storage.getNotes(key);
         return currentNotes.slice(0, range);
     };
 
+    const moveNote = async ({
+        fromKey,
+        toKey,
+        nodeId
+    }: {
+        fromKey: string;
+        toKey: string;
+        nodeId: string;
+    }): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(fromKey, nodeId);
+        await pushNote(toKey, deletedNote);
+        return true;
+    };
     return {
         pushNote,
         editNote,
         deleteNote,
-        readNotes: readNotesInRange
+        moveNote,
+        readNotes
     };
 };

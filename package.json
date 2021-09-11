@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@cfworker/uuid": "^1.8.3",
+    "@octokit/core": "^3.5.1",
     "sunder": "^0.7.2",
     "worktop": "^0.7.1"
   },

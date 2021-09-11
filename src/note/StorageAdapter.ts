@@ -10,7 +10,7 @@ export type AppendNote = {
 };
 
 export type StorageAdapter = {
-    getNotes(): Promise<Note[]>;
-    appendNote(notes: AppendNote): Promise<Note>;
-    deleteNote(id: Note["id"]): Promise<Note>;
+    getNotes(noteKey: string): Promise<Note[]>;
+    appendNote(noteKey: string, notes: AppendNote): Promise<Note>;
+    deleteNote(noteKey: string, id: Note["id"]): Promise<Note>;
 };

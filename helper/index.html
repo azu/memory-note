@@ -9,29 +9,29 @@
 <button id='read-range'>Read Recent</button>
 <div id='output'></div>
 <script type='module'>
-  const token = new URL(location.href).searchParams.get('token')
-  document.querySelector('#read-range').addEventListener('click', async () => {
-    const items = await fetch(`http://127.0.0.1:8787/notes/recent/3?token=${token}`).then(res => res.json())
-    const output = document.querySelector('#output')
-    output.innerHTML = ''
-    items.forEach(item => {
-      const li = document.createElement('li')
-      li.textContent = `${item.message} @ ${new Date(item.timestamp).toISOString()}`
-      output.append(li)
+    const token = new URL(location.href).searchParams.get('token')
+    document.querySelector('#read-range').addEventListener('click', async () => {
+        const items = await fetch(`http://127.0.0.1:8787/notes/inbox?limit=10&token=${token}`).then(res => res.json())
+        const output = document.querySelector('#output')
+        output.innerHTML = ''
+        items.forEach(item => {
+            const li = document.createElement('li')
+            li.textContent = `${item.message} @ ${new Date(item.timestamp).toISOString()}`
+            output.append(li)
+        })
     })
-  })
 </script>
 <script type='module'>
-  const token = new URL(location.href).searchParams.get('token');
-  document.querySelector('#post').addEventListener('click', () => {
-    fetch(`http://127.0.0.1:8787/notes/new?token=${token}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'test mmm' }),
+    const token = new URL(location.href).searchParams.get('token')
+    document.querySelector('#post').addEventListener('click', () => {
+        fetch(`http://127.0.0.1:8787/notes/inbox/new?token=${token}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: 'test note' }),
+        })
     })
-  })
 </script>
 </body>
 </html>

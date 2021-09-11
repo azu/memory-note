@@ -7,3 +7,6 @@ zone_id = ""
 kv_namespaces = [
     { binding = "MEMORY_NOTE", id = "5d96a29ca512466680e9e32601669ddd", preview_id = "89e03c9ccb1c48a68baf22d75f3d06fb" }
 ]
+
+# BACKEND_SERVICE: "github" or "cloudflare"
+vars = { BACKEND_SERVICE = "github" }

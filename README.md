@@ -13,15 +13,6 @@ $ wrangler secret put API_TOKEN
 
 You need to access your memory note using `?token=<INPUT_YOUR_API_TOKEN>`.
 
-### set `NOTE_STACK_SIZE`
-
-
-
-```shell
-$ wrangler secret put API_TOKEN
-100
-```
-
 ## Overview
 
 Two faces
@@ -30,55 +21,96 @@ Two faces
 - look back
 - Context Todo
 - Programmable Hooks
-- tag?
 
 ---
 
 - Add note to Inbox
 - Move note to another list from Inbox
 
+## Backend Service
+
+You can choose backend service by setting `BACKEND_SERVICE` env in [wrangler.toml](./wrangler.toml).
+
+- `github`: GitHub Project Board
+- `cloudflare`: Cloudflare Workers KV
+
 ## API
 
-### `GET /notes/recents/:num?token=<INPUT_YOUR_API_TOKEN>`
+### `GET: /notes/:key`
 
 Return an array of notes.
 
-### `POST /notes/new?token=<INPUT_YOUR_API_TOKEN>`
+Parameters:
+
+- `:key`: note key. This use-case is defined by adapter.
+
+Query:
+
+- `?limit`: result item count
+- `&token`: Your Memory Note token
+
+### `POST /notes/:key/new`
 
 Post a note that following json data.
 
 ```typescript
-type NoteWithTimeStamp = {
-  // unix timestamp
-  timestamp: number;
-  message: string;
+type NoteBody = {
+    message: string;
 };
-type NoteWithDate = {
-  // iso date
-  date: string;
-  message: string;
-};
-export type Note = NoteWithTimeStamp | NoteWithDate;
 ```
 
 Example of post data.
 
 ```json
 {
-    "timestamp": 1629891907036,
-    "message": "test"
+  "message": "test"
 }
 ```
 
-or
+Parameters:
+
+- `:key`: note key. This use-case is defined by adapter.
+
+Query:
+
+- `?token`: Your Memory Note token
+
+### `PUT /notes/:key/:id`
+
+Edit a note with the `:id`
+
+```typescript
+type NoteBody = {
+    message: string;
+};
+```
+
+Example of post data.
 
 ```json
 {
-    "date": "2021-08-25T12:39:01.071Z",
-    "message": "test"
+  "message": "test"
 }
 ```
 
-### `DELETE /notes/:id`
+Parameters:
+
+- `:key`: note key. This use-case is defined by adapter.
+- `:id`: note id. you can get the id from GET api
+
+Query:
+
+- `?token`: Your Memory Note token
+
+### `DELET /notes/:key/:id`
 
 Delete the note.
+
+Parameters:
+
+- `:key`: note key. This use-case is defined by adapter.
+- `:id`: note id. you can get the id from GET api
+
+Query:
+
+- `?token`: Your Memory Note token
