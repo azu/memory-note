@@ -24,6 +24,8 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^2.2.2",
     "@types/jest": "^26.0.23",
+    "@types/react": "^17.0.20",
+    "@types/react-dom": "^17.0.9",
     "@types/service-worker-mock": "^2.0.1",
     "jest": "^27.0.1",
     "lint-staged": "^11.1.2",
@@ -38,6 +40,8 @@
   "dependencies": {
     "@cfworker/uuid": "^1.8.3",
     "@octokit/core": "^3.5.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "sunder": "^0.7.2",
     "worktop": "^0.7.1"
   },

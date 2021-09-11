@@ -10,3 +10,4 @@ kv_namespaces = [
 
 # BACKEND_SERVICE: "github" or "cloudflare"
 vars = { BACKEND_SERVICE = "github" }
+[dev]

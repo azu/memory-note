@@ -4,6 +4,7 @@ import * as CORS from "worktop/cors";
 import { createMemoryNote, NoteArguments } from "./note/Note";
 import { createGitHubProjectStorage } from "./note/adapters/GitHubProject";
 import { createCloudflareStorage } from "./note/adapters/cloudflare";
+import { render } from "./widget/render";
 
 declare var API_TOKEN: string;
 declare var BACKEND_SERVICE: "github" | "cloudflare";
@@ -53,6 +54,17 @@ API.add("GET", "/notes/:key", async (req, res) => {
     }
     const notes = await memoryNote.readNotes(key, limitValue);
     res.send(200, notes);
+});
+API.add("GET", "/notes/:key/widget", async (req, res) => {
+    const key = req.params.key;
+    const limitValue = Number(req.query.get("limit")) || 10;
+    if (limitValue < 0 || limitValue > 50) {
+        return res.send(400, "invalid limit: 0 ~ 50");
+    }
+    const notes = await memoryNote.readNotes(key, limitValue);
+    const html = await render({ notes });
+    res.setHeader("Content-Type", "text/html; charset=UTF-8");
+    res.send(200, html);
 });
 API.add("POST", "/notes/:key/new", async (req, res) => {
     const key = req.params.key;

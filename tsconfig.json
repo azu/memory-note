@@ -13,6 +13,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "esModuleInterop": true,
+    "jsx": "react",
     "types": [
       "@cloudflare/workers-types",
       "@types/jest",
