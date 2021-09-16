@@ -16,7 +16,7 @@
     "build": "webpack --mode production",
     "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "test": "jest --config jestconfig.json --verbose",
+    "test": "npm run build",
     "prepare": "git config --local core.hooksPath .githooks",
     "deploy": "npm run build && wrangler publish"
   },
@@ -24,11 +24,9 @@
   "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^2.2.2",
-    "@types/jest": "^26.0.23",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@types/service-worker-mock": "^2.0.1",
-    "jest": "^27.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "service-worker-mock": "^2.0.5",
