@@ -45,7 +45,6 @@ API.prepare = (req, res) => {
 
 API.add("GET", "/notes/:listId", async (req, res) => {
     const key = req.params.listId;
-    console.log("key", key);
     const limitValue = Number(req.query.get("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
         return res.send(400, "invalid limit: 0 ~ 50");

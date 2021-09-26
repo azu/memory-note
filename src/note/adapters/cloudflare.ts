@@ -7,24 +7,24 @@ export const createCloudflareStorage = ({ kvStorage = MEMORY_NOTE }: { kvStorage
         async getNotes(noteKey: string): Promise<Note[]> {
             return JSON.parse((await kvStorage.get(noteKey)) ?? "[]");
         },
-        async appendNote(noteKey: string, note: AppendNote): Promise<Note> {
-            const currentNotes = await this.getNotes(noteKey);
+        async appendNote(listId: string, note: AppendNote): Promise<Note> {
+            const currentNotes = await this.getNotes(listId);
             const newNote: Note = {
                 id: uuid(),
                 ...note
             };
             const nextNotes = [newNote].concat(currentNotes);
-            await kvStorage.put(noteKey, JSON.stringify(nextNotes));
+            await kvStorage.put(listId, JSON.stringify(nextNotes));
             return newNote;
         },
-        async deleteNote(noteKey: string, id: Note["id"]): Promise<Note> {
-            const currentNotes = await this.getNotes(noteKey);
-            const index = currentNotes.findIndex((note) => note.id === id);
+        async deleteNote(listId: string, nodeId: Note["id"]): Promise<Note> {
+            const currentNotes = await this.getNotes(listId);
+            const index = currentNotes.findIndex((note) => note.id === nodeId);
             if (index === -1) {
-                throw new Error("not found note:" + id);
+                throw new Error("not found note:" + nodeId);
             }
             const [poppedNote] = currentNotes.splice(index, 1);
-            await kvStorage.put(noteKey, JSON.stringify(currentNotes));
+            await kvStorage.put(listId, JSON.stringify(currentNotes));
             return poppedNote;
         }
     };

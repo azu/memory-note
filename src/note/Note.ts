@@ -47,22 +47,22 @@ export const createMemoryNote = (options: { storage: StorageAdapter }) => {
         });
     };
 
-    const deleteNote = async (key: string, noteId: string): Promise<boolean> => {
-        const deletedNote = await storage.deleteNote(key, noteId);
+    const deleteNote = async (listId: string, noteId: string): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(listId, noteId);
         return true;
     };
 
-    const editNote = async (key: string, nodeId: string, note: NoteArguments): Promise<boolean> => {
-        const deletedNote = await storage.deleteNote(key, nodeId);
-        await pushNote(key, {
+    const editNote = async (listId: string, nodeId: string, note: NoteArguments): Promise<boolean> => {
+        const deletedNote = await storage.deleteNote(listId, nodeId);
+        await pushNote(listId, {
             ...deletedNote,
             ...note
         });
         return true;
     };
 
-    const readNotes = async (key: string, range: number): Promise<Note[]> => {
-        const currentNotes = await storage.getNotes(key);
+    const readNotes = async (listId: string, range: number): Promise<Note[]> => {
+        const currentNotes = await storage.getNotes(listId);
         return currentNotes.slice(0, range);
     };
 
