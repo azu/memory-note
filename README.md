@@ -5,7 +5,7 @@ Fast memory note for your brain.
 Memory Note is an app like reminder.app, but it does not have frontend.
 You can create and customize frontend and backend.
 
-In other words, Memory Note is programmable todo app.
+In other words, Memory Note is programmable todo-app middleware.
 
 ## Features
 
