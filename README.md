@@ -33,7 +33,7 @@ Requirements: [Cloudflare](https://www.cloudflare.com/) account
 1. Click [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/azu/memory-note)
 2. Deploy memory-note
 3. Set *Environment Variables* to your Memory Note workers
-  - You need to choose a backend for your Memory Note
+  - You need to choose a backend from `cloudflare` or `github` for your Memory Note
 
 ### Environment Variables
 
