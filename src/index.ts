@@ -11,7 +11,7 @@ declare var BACKEND_SERVICE: "github" | "cloudflare";
 declare var GITHUB_OWNER: string;
 declare var GITHUB_REPO: string;
 declare var GITHUB_PROJECT_ID: string;
-if (BACKEND_SERVICE !== "github" && BACKEND_SERVICE !== "cloudflare") {
+if (typeof BACKEND_SERVICE === "string" && BACKEND_SERVICE !== "github" && BACKEND_SERVICE !== "cloudflare") {
     throw new Error("BACKEND_SERVICE should github or cloudflare");
 }
 const API = new Router();
