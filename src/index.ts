@@ -34,10 +34,6 @@ const Auth: Handler<{ token: string }> = (req, res) => {
     }
 };
 
-/**
- * Handles `OPTIONS` requests using the same settings.
- * NOTE: Call `CORS.preflight` per-route for inidivual settings.
- */
 API.prepare = (req, res) => {
     CORS.preflight({
         origin: "*", // allow any `Origin` to connect
@@ -49,6 +45,7 @@ API.prepare = (req, res) => {
 
 API.add("GET", "/notes/:listId", async (req, res) => {
     const key = req.params.listId;
+    console.log("key", key);
     const limitValue = Number(req.query.get("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
         return res.send(400, "invalid limit: 0 ~ 50");
