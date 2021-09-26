@@ -284,8 +284,8 @@ Alfred workflow can show notes in large types, add a new note, remove a note.
  
 iOS shortcut can create a new note using voice(siri), read out notes.
 
-- Add note using voice to memory note: <https://www.icloud.com/shortcuts/c716e19f25cd48f59ca3d0e81cf84771>
-- Read memory note: <https://www.icloud.com/shortcuts/67f0b9fe76bc450bbd184760554c94ca>
+- Add note using voice to memory note: <https://www.icloud.com/shortcuts/c1095e066e1b40f9986aa1a5b0e36be8>
+- Read memory note: <https://www.icloud.com/shortcuts/d05d9b072cf94fffb4215b4e9d4ea6b6>
  
 :memo: You input `worker url` and `:listId` and `memory note token` after installing the workflow
 
