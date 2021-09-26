@@ -57,7 +57,7 @@ You need to create KV Binding.
 
 You need to create GitHub Projects Board and Get yoour GitHub API Token
 
-**Create Project and Get Column Id**
+**1. Create Project and Get Column Id**
 
 1. Create a GitHub Repository
 2. Create a GitHub Project on the repository
@@ -72,14 +72,14 @@ For example, if column link is `https://github.com/yourname/yourrepo/projects/1#
 
 ![copy-column-link](docs/img/copy-column-link.png)
 
-**Get GitHub API Token**
+**2. Get GitHub API Token**
 
 1. Visit <https://github.com/settings/tokens/new>
 2. Create new API Token
     - permissions: `repo`
 3. Copy it
 
-**Add Environments Variables to Cloudlfare Workers**
+**3. Add Environments Variables to Cloudflare Workers**
 
 Add some Environment Variables.
 
