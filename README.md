@@ -78,7 +78,7 @@ You need to create KV Binding.
 
 #### `github` backend
 
-You need to create GitHub Projects Board and Get yoour GitHub API Token
+You need to create GitHub Projects Board and Get your GitHub API Token
 
 **1. Create Project and Get Column Id**
 
