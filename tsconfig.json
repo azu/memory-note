@@ -17,7 +17,6 @@
     "jsx": "react",
     "types": [
       "@cloudflare/workers-types",
-      "@types/jest",
       "@types/service-worker-mock"
     ]
   },
