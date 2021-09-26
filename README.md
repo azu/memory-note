@@ -1,8 +1,17 @@
 # memory-note 
 
+Fast memory note for your brain on [Cloudflare Workers](https://workers.cloudflare.com/).
 
+## Features
+
+- Fast - Memory Notes works on [Cloudflare Workers](https://workers.cloudflare.com/)
+- Customizable Backend - Use Cloudflare Worker KV or GitHub Projects as backend
+- Extensible - Memory Notes interface is just REST API. You can create any frontend
+    - iOS shortcut.app, iOS Widgets, Alfred Workflow
 
 ## Usage
+
+Requirements: [Cloudflare](https://www.cloudflare.com/) account
 
 1. Click [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/azu/memory-note)
 2. Deploy memory-note
