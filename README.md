@@ -55,6 +55,8 @@ Currently, Memory Note supports following backend:
 - `cloudflare`: Cloudflare Workers KV
 - `github`: GitHub Project Board
 
+You can choose a backend.
+
 :memo: If you want to add new backend, please submit Pull Request!
 
 [StorageAdapter.ts](./src/note/StorageAdapter.ts) is an interface for backend.
