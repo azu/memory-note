@@ -20,6 +20,8 @@
   - Default: `cloudflare`
 - Other vars is defined in each Backend Service
 
+:memo: all values should be encrypted. 
+
 ### Backend Service
 
 Currently, Memory Note supports following backend:
