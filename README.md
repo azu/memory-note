@@ -127,7 +127,7 @@ Visit `https://dash.cloudflare.com/{your account id}/workers/view/memory-note/se
     - `Variable name`: `GITHUB_TOKEN`
     - `Value`: your GitHub API token
 
-For example, if you have used `https://github.com/you/my-note/projects/1` repo, you need to set `GITHUB_OWNER=your` and `GITHUB_REPO=my-note`, and `GITHUB_PROJECT_ID=1`.
+For example, if you have used `https://github.com/your/my-note/projects/1` repo, you need to set `GITHUB_OWNER=your` and `GITHUB_REPO=my-note`, and `GITHUB_PROJECT_ID=1`.
 
 ![github-env](docs/img/github-env.png)
 
