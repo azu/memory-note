@@ -14,7 +14,7 @@ declare var GITHUB_PROJECT_ID: string;
 if (typeof BACKEND_SERVICE === "string" && BACKEND_SERVICE !== "github" && BACKEND_SERVICE !== "cloudflare") {
     throw new Error("BACKEND_SERVICE should github or cloudflare");
 }
-const backendService = typeof BACKEND_SERVICE !== "undefined" ? BACKEND_SERVICE : "github";
+const backendService = typeof BACKEND_SERVICE !== "undefined" ? BACKEND_SERVICE : "cloudflare";
 const API = new Router();
 const memoryNote = createMemoryNote({
     storage:
