@@ -89,11 +89,16 @@ You need to create GitHub Projects Board and Get your GitHub API Token
 4. Copy Column link
 5. Get Column id from the copied link
 
+![copy-column-link](docs/img/copy-column-link.png)
+
 This **Column id** is `:listId` value of API endpoint.
 
 For example, if column link is `https://github.com/yourname/yourrepo/projects/1#column-1111111`, `1111111` is `column_id`. You need to copy it.
+You can use the column id as `:listId`.
 
-![copy-column-link](docs/img/copy-column-link.png)
+```bash
+$ curl https://example-memory-note.worker.dev/notes/1111111?token=random-password
+```
 
 **2. Get GitHub API Token**
 
