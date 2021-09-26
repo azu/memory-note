@@ -64,7 +64,7 @@ You need to create GitHub Projects Board and Get yoour GitHub API Token
 4. Copy Column link
 5. Get Column id from the copied link
 
-This **Column id** is `:key` value of API endpoint.
+This **Column id** is `:listId` value of API endpoint.
 
 For example, if column link is `https://github.com/yourname/yourrepo/projects/1#column-1111111`, `1111111` is `column_id`. You need to copy it.
 
@@ -110,13 +110,13 @@ For example, if you have used `https://github.com/you/my-note/projects/1` repo, 
 
 Memory-Note provides following API.
 
-### `GET: /notes/:key`
+### `GET: /notes/:listId`
 
 Return an array of notes.
 
 Parameters:
 
-- `:key`: note key. This use-case is defined by adapter.
+- `:listId`: note key. This use-case is defined by adapter.
     - on `github`: your project column id
     - on `cloudflare`: any string
 
@@ -128,17 +128,18 @@ Query:
 Example:
 
 ```
-curl https://{your worker name}.workers.dev/notes/{your GitHub Project Column Id}?token={your Memory Note Token}
+# curl https://{your worker}/notes/{your GitHub Project Column Id}?token={your Memory Note Token}
+$ curl https://example-memory-note.worker.dev/notes/11111?token=random-password
 ```
 
-### `GET /notes/:key/widget`
+### `GET /notes/:listId/widget`
 
 Return simple list page for widgets.
 
 You can show the `key` note on Widgets app like [Web Widget](https://apps.apple.com/jp/app/web-widget-webpage-screenshot/id1561605396).
 
 
-### `POST /notes/:key/new`
+### `POST /notes/:listId/new`
 
 Post a note that following json data.
 
@@ -158,15 +159,15 @@ Example of post data.
 
 Parameters:
 
-- `:key`: note key. This use-case is defined by adapter.
+- `:listId`: note key. This use-case is defined by adapter.
 
 Query:
 
 - `?token`: Your Memory Note token
 
-### `PUT /notes/:key/:id`
+### `PUT /notes/:listId/:nodeId`
 
-Edit a note with the `:id`
+Edit a note with the `:nodeId`
 
 ```typescript
 type NoteBody = {
@@ -184,32 +185,32 @@ Example of post data.
 
 Parameters:
 
-- `:key`: note key. This use-case is defined by adapter.
-- `:id`: note id. you can get the id from GET api
+- `:listId`: note key. This use-case is defined by adapter.
+- `:nodeId`: note id. you can get the id from GET api
 
 Query:
 
 - `?token`: Your Memory Note token
 
-### `DELETE /notes/:key/:id`
+### `DELETE /notes/:listId/:nodeId`
 
 Delete the note.
 
 Parameters:
 
-- `:key`: note key. This use-case is defined by adapter.
-- `:id`: note id. you can get the id from GET api
+- `:listId`: note key. This use-case is defined by adapter.
+- `:nodeId`: note id. you can get the id from GET api
 
 Query:
 
 - `?token`: Your Memory Note token
 
-### `POST /notes/:key/move/:id`
+### `POST /notes/:listId/move/:nodeId`
 
 Move the note to another list.
 
-- `:key`: note key. This use-case is defined by adapter.
-- `:id`: note id. you can get the id from GET api
+- `:listId`: note key. This use-case is defined by adapter.
+- `:nodeId`: note id. you can get the id from GET api
 
 Body:
 
@@ -220,3 +221,13 @@ Body:
   "to": "another list id"
 }
 ```
+
+## Clients
+
+You can use client app by used APIs.
+
+- Alfred:
+- iOS shortcuts.app:
+  - Add note to memory note: <https://www.icloud.com/shortcuts/c716e19f25cd48f59ca3d0e81cf84771>
+  - Read memory note: <https://www.icloud.com/shortcuts/67f0b9fe76bc450bbd184760554c94ca>
+  - :memo: You input `worker url` and `:listId` and `memory note token` after installing the workflow

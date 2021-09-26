@@ -47,8 +47,8 @@ API.prepare = (req, res) => {
     Auth(req as any, res);
 };
 
-API.add("GET", "/notes/:key", async (req, res) => {
-    const key = req.params.key;
+API.add("GET", "/notes/:listId", async (req, res) => {
+    const key = req.params.listId;
     const limitValue = Number(req.query.get("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
         return res.send(400, "invalid limit: 0 ~ 50");
@@ -56,8 +56,8 @@ API.add("GET", "/notes/:key", async (req, res) => {
     const notes = await memoryNote.readNotes(key, limitValue);
     res.send(200, notes);
 });
-API.add("GET", "/notes/:key/widget", async (req, res) => {
-    const key = req.params.key;
+API.add("GET", "/notes/:listId/widget", async (req, res) => {
+    const key = req.params.listId;
     const limitValue = Number(req.query.get("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
         return res.send(400, "invalid limit: 0 ~ 50");
@@ -67,8 +67,8 @@ API.add("GET", "/notes/:key/widget", async (req, res) => {
     res.setHeader("Content-Type", "text/html; charset=UTF-8");
     res.send(200, html);
 });
-API.add("POST", "/notes/:key/new", async (req, res) => {
-    const key = req.params.key;
+API.add("POST", "/notes/:listId/new", async (req, res) => {
+    const key = req.params.listId;
     const note = await req.body<NoteArguments>();
     if (!note) {
         return res.send(400, "invalid note");
@@ -76,9 +76,9 @@ API.add("POST", "/notes/:key/new", async (req, res) => {
     await memoryNote.pushNote(key, note);
     res.send(200, { ok: true });
 });
-API.add("POST", "/notes/:key/move/:id", async (req, res) => {
-    const key = req.params.key;
-    const noteId = req.params.id;
+API.add("POST", "/notes/:listId/move/:noteId", async (req, res) => {
+    const key = req.params.listId;
+    const noteId = req.params.noteId;
     const body = await req.body<{ to: string }>();
     if (!body) {
         return res.send(400, "invalid body");
@@ -93,9 +93,9 @@ API.add("POST", "/notes/:key/move/:id", async (req, res) => {
     });
     res.send(200, { ok: true });
 });
-API.add("PUT", "/notes/:key/:id", async (req, res) => {
-    const key = req.params.key;
-    const id = req.params.id;
+API.add("PUT", "/notes/:listId/:noteId", async (req, res) => {
+    const key = req.params.listId;
+    const id = req.params.noteId;
     const note = await req.body<NoteArguments>();
     if (!note) {
         return res.send(400, "invalid note");
@@ -103,9 +103,9 @@ API.add("PUT", "/notes/:key/:id", async (req, res) => {
     await memoryNote.editNote(key, id, note);
     res.send(200, { ok: true });
 });
-API.add("DELETE", "/notes/:key/:id", async (req, res) => {
-    const key = req.params.key;
-    const nodeId = req.params.id;
+API.add("DELETE", "/notes/:listId/:noteId", async (req, res) => {
+    const key = req.params.listId;
+    const nodeId = req.params.noteId;
     if (!nodeId) {
         return res.send(400, "invalid node.id");
     }
