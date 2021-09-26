@@ -9,6 +9,20 @@ Fast memory note for your brain on [Cloudflare Workers](https://workers.cloudfla
 - Extensible - Memory Notes interface is just REST API. You can create any frontend
     - iOS shortcut.app, iOS Widgets, Alfred Workflow
 
+### Screenshots
+
+![GitHub Project Board](docs/img/github-project-board.png)
+
+> use GitHub Project Board as backend
+
+![iOS Widget](docs/img/ios-widget.jpeg)
+
+> iOS Widgets using [Web Widget](https://apps.apple.com/jp/app/web-widget-webpage-screenshot/id1561605396) and Siri integrations
+
+![mac Alfred](docs/img/mac-alfred.png)
+
+> Alfred workflow integration
+
 ## Usage
 
 Requirements: [Cloudflare](https://www.cloudflare.com/) account
