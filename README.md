@@ -266,7 +266,7 @@ Alfred workflow can show notes in large types, add a new note, remove a note.
 
 [Workflow Variables](https://www.alfredapp.com/help/workflows/advanced/variables/)
 
-- `API_ENDPOINT`: your cloudlfare worker url
+- `API_ENDPOINT`: your cloudflare worker url
   - Example, `https://my-memory-note.you.workers.dev`
 - `API_TOKEN`: your memory note token
 - `LIST_ID`: your main `:listId`
