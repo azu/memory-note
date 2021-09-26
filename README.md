@@ -5,7 +5,8 @@ Fast memory note for your brain on [Cloudflare Workers](https://workers.cloudfla
 ## Features
 
 - Fast - Memory Notes works on [Cloudflare Workers](https://workers.cloudflare.com/)
-- Customizable Backend - Use Cloudflare Worker KV or GitHub Projects as backend
+  - Customizable Backend - Use Cloudflare Worker KV or GitHub Projects as backend
+    - Also, you can create own backend by implementing 3 APIs
 - Flexible Frontend - Memory Notes interface is just REST API. You can create any frontend
     - iOS shortcut.app, iOS Widgets, Alfred Workflow
 
@@ -53,6 +54,8 @@ Currently, Memory Note supports following backend:
 - `github`: GitHub Project Board
 
 :memo: If you want to add new backend, please submit Pull Request!
+
+[StorageAdapter.ts](./src/note/StorageAdapter.ts) is an interface for backend.
 
 #### `cloudflare` backend
 
