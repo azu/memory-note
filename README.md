@@ -140,7 +140,7 @@ For example, if you have used `https://github.com/your/my-note/projects/1` repo,
 
 Memory-Note provides following API.
 
-### `GET: /notes/:listId`
+### `GET /notes/:listId`
 
 Return an array of notes.
 
