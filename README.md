@@ -1,6 +1,6 @@
 # memory-note 
 
-Fast memory note for your brain on [Cloudflare Workers](https://workers.cloudflare.com/).
+Fast memory note for your brain.
 
 ## Features
 
