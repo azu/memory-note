@@ -253,7 +253,7 @@ Body:
 
 ## Clients
 
-You can use client app by used APIs.
+You can use client app for Memory Note.
 
 ### Alfred
 
