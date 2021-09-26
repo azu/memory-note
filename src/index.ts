@@ -6,7 +6,7 @@ import { createGitHubProjectStorage } from "./note/adapters/GitHubProject";
 import { createCloudflareStorage } from "./note/adapters/cloudflare";
 import { render } from "./widget/render";
 
-declare var API_TOKEN: string;
+declare var INPUT_YOUR_MEMORY_NOTE_TOKEN: string;
 declare var BACKEND_SERVICE: "github" | "cloudflare";
 declare var GITHUB_OWNER: string;
 declare var GITHUB_REPO: string;
@@ -28,7 +28,7 @@ const memoryNote = createMemoryNote({
 
 const Auth: Handler<{ token: string }> = (req, res) => {
     const token = req.query.get("token");
-    if (token !== API_TOKEN) {
+    if (token !== INPUT_YOUR_MEMORY_NOTE_TOKEN) {
         res.send(400);
     }
 };

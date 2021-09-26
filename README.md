@@ -1,31 +1,24 @@
-# memory-note
+# memory-note [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/azu/memory-note)
 
 ## Usage
 
-### set `API_TOKEN`
+1. Click
+2. Create Cloudflare API token for deploy
+   1. Visit <https://dash.cloudflare.com/profile/api-tokens>
+   2. Create new API token
+   3. Select "Editing Cloudflare Workers" template
+   4. Copy the API token
 
-`API_TOKEN` should be random value. It is used for simple authorization.
+### set `MEMORY_NOTE_TOKEN`
+
+`MEMORY_NOTE_TOKEN` should be random value. It is used for simple authorization.
 
 ```shell
-$ wrangler secret put API_TOKEN
-<INPUT_YOUR_API_TOKEN>
+$ wrangler secret put MEMORY_NOTE_TOKEN
+<INPUT_YOUR_MEMORY_NOTE_TOKEN>
 ```
 
-You need to access your memory note using `?token=<INPUT_YOUR_API_TOKEN>`.
-
-## Overview
-
-Two faces
-
-- To do
-- look back
-- Context Todo
-- Programmable Hooks
-
----
-
-- Add note to Inbox
-- Move note to another list from Inbox
+You need to access your memory note using `?token=<INPUT_YOUR_MEMORY_NOTE_TOKEN>`.
 
 ## Backend Service
 
