@@ -1,4 +1,4 @@
-# memory-note 
+# Memory Note
 
 Fast memory note for your brain.
 
@@ -18,7 +18,6 @@ In other words, Memory Note is programmable todo-app middleware.
     - iOS shortcut.app, iOS Widgets, Alfred Workflow
 
 ![Overview](docs/img/overview.png)
-
 
 ### Screenshots
 
