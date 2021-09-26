@@ -56,7 +56,7 @@ export const createGitHubProjectStorage = ({
                 `query ($owner: String!, $repo: String!, $projectId: Int!) {
   repository(owner: $owner, name: $repo) {
     project(number: $projectId) {
-      columns(first: 3) {
+      columns(first: 10) {
         nodes {
           resourcePath
           cards (archivedStates: NOT_ARCHIVED) {
