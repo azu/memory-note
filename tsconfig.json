@@ -18,7 +18,8 @@
     "types": [
       "@cloudflare/workers-types",
       "@types/service-worker-mock"
-    ]
+    ],
+    "skipLibCheck": true
   },
   "include": [
     "src"

@@ -14,9 +14,10 @@
   "scripts": {
     "dev": "wrangler dev",
     "build": "webpack --mode production",
+    "type-check": "tsc",
     "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
-    "test": "npm run build",
+    "test": "npm run type-check",
     "prepare": "git config --local core.hooksPath .githooks",
     "deploy": "npm run build && wrangler publish"
   },
