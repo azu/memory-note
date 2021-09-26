@@ -164,7 +164,7 @@ $ curl https://example-memory-note.worker.dev/notes/11111?token=random-password
 
 ### `GET /notes/:listId/widget`
 
-Return simple html page for using widgets.
+Return simple html page for widgets.
 
 You can show your notes on Widgets app like [Web Widget](https://apps.apple.com/jp/app/web-widget-webpage-screenshot/id1561605396).
 
