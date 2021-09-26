@@ -29,6 +29,12 @@ You can choose backend service by setting `BACKEND_SERVICE` env in [wrangler.tom
 
 ## API
 
+### `GET /notes/:key/widget`
+
+Return simple list page for widgets.
+
+You can show the `key` note on Widgets app like [Web Widget](https://apps.apple.com/jp/app/web-widget-webpage-screenshot/id1561605396).
+
 ### `GET: /notes/:key`
 
 Return an array of notes.
@@ -95,7 +101,7 @@ Query:
 
 - `?token`: Your Memory Note token
 
-### `DELET /notes/:key/:id`
+### `DELETE /notes/:key/:id`
 
 Delete the note.
 
@@ -107,3 +113,20 @@ Parameters:
 Query:
 
 - `?token`: Your Memory Note token
+
+### `POST /notes/:key/move/:id`
+
+Move the note to another list.
+
+- `:key`: note key. This use-case is defined by adapter.
+- `:id`: note id. you can get the id from GET api
+
+Body:
+
+- `to`: to list id
+
+```shell
+{
+  "to": "another list id"
+}
+```
