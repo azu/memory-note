@@ -14,10 +14,11 @@ declare var GITHUB_PROJECT_ID: string;
 if (typeof BACKEND_SERVICE === "string" && BACKEND_SERVICE !== "github" && BACKEND_SERVICE !== "cloudflare") {
     throw new Error("BACKEND_SERVICE should github or cloudflare");
 }
+const backendService = typeof BACKEND_SERVICE !== "undefined" ? BACKEND_SERVICE : "github";
 const API = new Router();
 const memoryNote = createMemoryNote({
     storage:
-        BACKEND_SERVICE === "github"
+        backendService === "github"
             ? createGitHubProjectStorage({
                   owner: GITHUB_OWNER,
                   repo: GITHUB_REPO,
