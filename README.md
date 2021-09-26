@@ -42,7 +42,7 @@ You need to create KV Binding.
    - `Variable name`: `MEMORY_NOTE`
    - `KV namespace`: created KV Namespace(`MY_MEMORY_NOTE`)
 
-![kv-namspace-binding](docs/kv-namspace-binding.png)
+![kv-namspace-binding](docs/img/kv-namspace-binding.png)
 
 5. Add new Environment Variables
 
@@ -70,7 +70,7 @@ This **Column id** is `:listId` value of API endpoint.
 
 For example, if column link is `https://github.com/yourname/yourrepo/projects/1#column-1111111`, `1111111` is `column_id`. You need to copy it.
 
-![copy-column-link](docs/copy-column-link.png)
+![copy-column-link](docs/img/copy-column-link.png)
 
 **Get GitHub API Token**
 
@@ -106,7 +106,7 @@ Visit `https://dash.cloudflare.com/{your account id}/workers/view/memory-note/se
 
 For example, if you have used `https://github.com/you/my-note/projects/1` repo, you need to set `GITHUB_OWNER=your` and `GITHUB_REPO=my-note`, and `GITHUB_PROJECT_ID=1`.
 
-![github-env](docs/github-env.png)
+![github-env](docs/img/github-env.png)
 
 ## API
 
@@ -167,9 +167,9 @@ Query:
 
 - `?token`: Your Memory Note token
 
-### `PUT /notes/:listId/:nodeId`
+### `PUT /notes/:listId/:noteId`
 
-Edit a note with the `:nodeId`
+Edit a note with the `:noteId`
 
 ```typescript
 type NoteBody = {
@@ -188,31 +188,31 @@ Example of post data.
 Parameters:
 
 - `:listId`: note key. This use-case is defined by adapter.
-- `:nodeId`: note id. you can get the id from GET api
+- `:noteId`: note id. you can get the id from GET api
 
 Query:
 
 - `?token`: Your Memory Note token
 
-### `DELETE /notes/:listId/:nodeId`
+### `DELETE /notes/:listId/:noteId`
 
 Delete the note.
 
 Parameters:
 
 - `:listId`: note key. This use-case is defined by adapter.
-- `:nodeId`: note id. you can get the id from GET api
+- `:noteId`: note id. you can get the id from GET api
 
 Query:
 
 - `?token`: Your Memory Note token
 
-### `POST /notes/:listId/move/:nodeId`
+### `POST /notes/:listId/move/:noteId`
 
 Move the note to another list.
 
 - `:listId`: note key. This use-case is defined by adapter.
-- `:nodeId`: note id. you can get the id from GET api
+- `:noteId`: note id. you can get the id from GET api
 
 Body:
 
@@ -228,8 +228,31 @@ Body:
 
 You can use client app by used APIs.
 
-- Alfred:
-- iOS shortcuts.app:
-  - Add note to memory note: <https://www.icloud.com/shortcuts/c716e19f25cd48f59ca3d0e81cf84771>
-  - Read memory note: <https://www.icloud.com/shortcuts/67f0b9fe76bc450bbd184760554c94ca>
-  - :memo: You input `worker url` and `:listId` and `memory note token` after installing the workflow
+### Alfred
+
+Alfred workflow can show notes in large types, add a new note, remove a note.
+
+- Download [memory-note.workflow](docs/alfred/memory-note.alfredworkflow)
+- Set [Workflow Variables](https://www.alfredapp.com/help/workflows/advanced/variables/)
+
+![alfred-workflow-variables](docs/img/alfred-workflow-variables.png)
+
+[Workflow Variables](https://www.alfredapp.com/help/workflows/advanced/variables/)
+
+- `API_ENDPOINT`: your cloudlfare worker url
+  - Example, `https://my-memory-note.you.workers.dev`
+- `API_TOKEN`: your memory note token
+- `LIST_ID`: your main `:listId`
+
+### iOS shortcuts.app:
+ 
+iOS shortcut can create a new note using voice(siri), read out notes.
+
+- Add note using voice to memory note: <https://www.icloud.com/shortcuts/c716e19f25cd48f59ca3d0e81cf84771>
+- Read memory note: <https://www.icloud.com/shortcuts/67f0b9fe76bc450bbd184760554c94ca>
+ 
+:memo: You input `worker url` and `:listId` and `memory note token` after installing the workflow
+
+### Others
+
+- [ ] Please submit a Pull Request
