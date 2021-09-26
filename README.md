@@ -12,6 +12,9 @@ Fast memory note for your brain.
 - Flexible Frontend - Memory Notes interface is just REST API. You can create any frontend
     - iOS shortcut.app, iOS Widgets, Alfred Workflow
 
+![Overview](docs/img/overview.png)
+
+
 ### Screenshots
 
 ![GitHub Project Board](docs/img/github-project-board.png)
