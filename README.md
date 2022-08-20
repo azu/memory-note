@@ -46,7 +46,7 @@ Requirements: [Cloudflare](https://www.cloudflare.com/) account
 
 - `MEMORY_NOTE_TOKEN`: It is random value. This is used for authorization.
   - You need to access your memory note using `?token=<MEMORY_NOTE_TOKEN>`.
-  - You can use random password generator like <https://passwordsgenerator.net/>
+  - You can use random password generator like <https://www.lastpass.com/features/password-generator>
 - `BACKEND_SERVICE`: backend service
   - `github` or `cloudflare` is supported 
   - Default: `cloudflare`
