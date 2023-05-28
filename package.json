@@ -12,10 +12,8 @@
     "API"
   ],
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "webpack --mode production",
+    "dev": "wrangler dev src/index.ts",
     "type-check": "tsc",
-    "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "test": "npm run type-check",
     "prepare": "git config --local core.hooksPath .githooks",
@@ -31,19 +29,21 @@
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
     "service-worker-mock": "^2.0.5",
-    "ts-jest": "^27.0.1",
-    "ts-loader": "^9.2.2",
-    "typescript": "^4.3.2",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0"
+    "ts-jest": "^29.1.0",
+    "ts-loader": "^9.4.3",
+    "typescript": "^5.0.4",
+    "webpack": "^5.84.1",
+    "webpack-cli": "^5.1.1",
+    "wrangler": "^3.0.1"
   },
   "dependencies": {
     "@cfworker/uuid": "^1.8.3",
+    "@notionhq/client": "^2.2.5",
     "@octokit/core": "^3.5.1",
+    "hono": "^3.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "sunder": "^0.7.2",
-    "worktop": "^0.7.1"
+    "worktop": "^0.7.3"
   },
   "prettier": {
     "singleQuote": false,

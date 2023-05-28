@@ -1,11 +1,10 @@
 import { AppendNote, Note, StorageAdapter } from "../StorageAdapter";
 import { uuid } from "@cfworker/uuid";
 
-declare let MEMORY_NOTE: KVNamespace;
-export const createCloudflareStorage = ({ kvStorage = MEMORY_NOTE }: { kvStorage?: KVNamespace }): StorageAdapter => {
+export const createCloudflareStorage = ({ kvStorage }: { kvStorage: KVNamespace }): StorageAdapter => {
     return {
-        async getNotes(noteKey: string): Promise<Note[]> {
-            return JSON.parse((await kvStorage.get(noteKey)) ?? "[]");
+        async getNotes(listId: string): Promise<Note[]> {
+            return JSON.parse((await kvStorage.get(listId)) ?? "[]");
         },
         async appendNote(listId: string, note: AppendNote): Promise<Note> {
             const currentNotes = await this.getNotes(listId);

@@ -1,115 +1,149 @@
-import { Handler, Router } from "worktop";
-import * as Cache from "worktop/cache";
-import * as CORS from "worktop/cors";
+import { Context, Hono } from "hono";
+import { cors } from "hono/cors";
 import { createMemoryNote, NoteArguments } from "./note/Note";
 import { createGitHubProjectStorage } from "./note/adapters/GitHubProject";
 import { createCloudflareStorage } from "./note/adapters/cloudflare";
 import { render } from "./widget/render";
+import { createNotionStorage } from "./note/adapters/Notion";
 
 declare var MEMORY_NOTE_TOKEN: string;
-declare var BACKEND_SERVICE: "github" | "cloudflare";
+declare var BACKEND_SERVICE: "github" | "cloudflare" | "notion";
 declare var GITHUB_OWNER: string;
 declare var GITHUB_REPO: string;
 declare var GITHUB_PROJECT_ID: string;
-if (typeof BACKEND_SERVICE === "string" && BACKEND_SERVICE !== "github" && BACKEND_SERVICE !== "cloudflare") {
-    throw new Error("BACKEND_SERVICE should github or cloudflare");
+if (
+    typeof BACKEND_SERVICE === "string" &&
+    BACKEND_SERVICE !== "github" &&
+    BACKEND_SERVICE !== "cloudflare" &&
+    BACKEND_SERVICE !== "notion"
+) {
+    throw new Error("BACKEND_SERVICE should github or cloudflare or notion");
 }
-const backendService = typeof BACKEND_SERVICE !== "undefined" ? BACKEND_SERVICE : "cloudflare";
-const API = new Router();
-const memoryNote = createMemoryNote({
-    storage:
-        backendService === "github"
-            ? createGitHubProjectStorage({
-                  owner: GITHUB_OWNER,
-                  repo: GITHUB_REPO,
-                  projectId: Number(GITHUB_PROJECT_ID)
-              })
-            : createCloudflareStorage({})
-});
-
-const Auth: Handler<{ token: string }> = (req, res) => {
-    const token = req.query.get("token");
-    if (token !== MEMORY_NOTE_TOKEN) {
-        res.send(400);
+const app = new Hono();
+app.use("*", async (c, next) => {
+    const token = c.req.query("token");
+    if (!c.env?.MEMORY_NOTE_TOKEN) {
+        return c.json(
+            {
+                message: "token is not defined"
+            },
+            400
+        );
     }
+    if (token !== c.env.MEMORY_NOTE_TOKEN) {
+        return c.json(
+            {
+                message: "invalid token"
+            },
+            400
+        );
+    }
+    await next();
+});
+app.use("*", cors());
+
+const newMemoryNote = (c: Context) => {
+    const backendService = c.env.BACKEND_SERVICE || "cloudflare";
+    if (backendService === "notion") {
+        if (!c.env.NOTION_TOKEN) {
+            throw new Error("NOTION_TOKEN is not defined");
+        }
+        if (!c.env.NOTION_DATABASE_ID) {
+            throw new Error("NOTION_DATABASE_ID is not defined");
+        }
+        return createMemoryNote({
+            storage: createNotionStorage({
+                NOTION_API_TOKEN: c.env.NOTION_TOKEN,
+                NOTION_DATABASE_ID: c.env.NOTION_DATABASE_ID
+            })
+        });
+    } else if (backendService === "cloudflare") {
+        return createMemoryNote({
+            storage: createCloudflareStorage({
+                kvStorage: c.env.MEMORY_NOTE
+            })
+        });
+    } else if (backendService === "github") {
+        return createMemoryNote({
+            storage: createGitHubProjectStorage({
+                owner: GITHUB_OWNER,
+                repo: GITHUB_REPO,
+                projectId: Number(GITHUB_PROJECT_ID)
+            })
+        });
+    }
+    throw new Error("invalid backend service");
 };
 
-API.prepare = (req, res) => {
-    CORS.preflight({
-        origin: "*", // allow any `Origin` to connect
-        headers: ["Cache-Control", "Content-Type"],
-        methods: ["GET", "HEAD", "PUT", "POST", "DELETE"]
-    })(req as any, res);
-    Auth(req as any, res);
-};
-
-API.add("GET", "/notes/:listId", async (req, res) => {
-    const key = req.params.listId;
-    const limitValue = Number(req.query.get("limit")) || 10;
+app.get("/notes/:listId", async (c) => {
+    const key = c.req.param("listId");
+    const limitValue = Number(c.req.query("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
-        return res.send(400, "invalid limit: 0 ~ 50");
+        return c.text("invalid limit: 0 ~ 50", 400);
     }
-    const notes = await memoryNote.readNotes(key, limitValue);
-    res.send(200, notes);
+    const notes = await newMemoryNote(c).readNotes(key, limitValue);
+    return c.json(notes, 200);
 });
-API.add("GET", "/notes/:listId/widget", async (req, res) => {
-    const key = req.params.listId;
-    const limitValue = Number(req.query.get("limit")) || 10;
+app.get("/notes/:listId/widget", async (c) => {
+    const key = c.req.param("listId");
+    console.log({
+        key
+    });
+    const limitValue = Number(c.req.query("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
-        return res.send(400, "invalid limit: 0 ~ 50");
+        return c.text("invalid limit: 0 ~ 50", 400);
     }
-    const notes = await memoryNote.readNotes(key, limitValue);
+    const notes = await newMemoryNote(c).readNotes(key, limitValue);
     const html = await render({ notes });
-    res.setHeader("Content-Type", "text/html; charset=UTF-8");
-    res.send(200, html);
+    return c.text(html, 200, {
+        "Content-Type": "text/html; charset=UTF-8"
+    });
 });
-API.add("POST", "/notes/:listId/new", async (req, res) => {
-    const key = req.params.listId;
-    const note = await req.body<NoteArguments>();
+app.post("/notes/:listId/new", async (c) => {
+    const key = c.req.param("listId");
+    const note = await c.req.json<NoteArguments>();
     if (!note) {
-        return res.send(400, "invalid note");
+        return c.text("invalid note", 400);
     }
-    await memoryNote.pushNote(key, note);
-    res.send(200, { ok: true });
+    await newMemoryNote(c).pushNote(key, note);
+    return c.json({ ok: true }, 200);
 });
-API.add("POST", "/notes/:listId/move/:noteId", async (req, res) => {
-    const key = req.params.listId;
-    const noteId = req.params.noteId;
-    const body = await req.body<{ to: string }>();
+app.post("/notes/:listId/move/:noteId", async (c) => {
+    const key = c.req.param("listId");
+    const noteId = c.req.param("noteId");
+
+    const body = await c.req.json<{ to: string }>();
     if (!body) {
-        return res.send(400, "invalid body");
+        return c.text("invalid body", 400);
     }
     if (!body.to) {
-        return res.send(400, "invalid body: missing to");
+        return c.text("invalid body: missing to", 400);
     }
-    await memoryNote.moveNote({
+    await newMemoryNote(c).moveNote({
         fromKey: key,
         toKey: body.to,
         nodeId: noteId
     });
-    res.send(200, { ok: true });
+    return c.json({ ok: true }, 200);
 });
-API.add("PUT", "/notes/:listId/:noteId", async (req, res) => {
-    const key = req.params.listId;
-    const id = req.params.noteId;
-    const note = await req.body<NoteArguments>();
+app.put("/notes/:listId/:noteId", async (c) => {
+    const key = c.req.param("listId");
+    const noteId = c.req.param("noteId");
+    const note = await c.req.json<NoteArguments>();
     if (!note) {
-        return res.send(400, "invalid note");
+        return c.text("invalid note", 400);
     }
-    await memoryNote.editNote(key, id, note);
-    res.send(200, { ok: true });
+    await newMemoryNote(c).editNote(key, noteId, note);
+    return c.json({ ok: true }, 200);
 });
-API.add("DELETE", "/notes/:listId/:noteId", async (req, res) => {
-    const key = req.params.listId;
-    const nodeId = req.params.noteId;
-    if (!nodeId) {
-        return res.send(400, "invalid node.id");
+app.delete("/notes/:listId/:noteId", async (c) => {
+    const key = c.req.param("listId");
+    const noteId = c.req.param("noteId");
+    if (!noteId) {
+        return c.text("invalid node.id", 400);
     }
-    await memoryNote.deleteNote(key, nodeId);
-    res.send(200, { ok: true });
+    await newMemoryNote(c).deleteNote(key, noteId);
+    return c.json({ ok: true }, 200);
 });
 
-// Attach "fetch" event handler
-// ~> use `Cache` for request-matching, when permitted
-// ~> store Response in `Cache`, when permitted
-Cache.listen(API.run);
+export default app;

@@ -1,32 +1,19 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "module": "commonjs",
-    "target": "esnext",
-    "lib": [
-      "esnext",
-      "webworker",
-      "DOM"
-    ],
-    "alwaysStrict": true,
-    "strict": true,
-    "preserveConstEnums": true,
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
-    "sourceMap": true,
     "esModuleInterop": true,
-    "jsx": "react",
+    "skipLibCheck": true,
+    "strict": true,
+    "lib": [
+      "esnext"
+    ],
     "types": [
       "@cloudflare/workers-types",
-      "@types/service-worker-mock"
+      "node"
     ],
-    "skipLibCheck": true
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx"
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "test"
-  ]
 }
