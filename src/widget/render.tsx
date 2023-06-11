@@ -1,5 +1,5 @@
 import { Widget } from "./widget";
-import { html } from "hono/html";
+import { html, raw } from "hono/html";
 import { Note } from "../note/StorageAdapter";
 
 export const HTML = ({ notes }: { notes: Note[] }) => {
@@ -43,7 +43,8 @@ export const HTML = ({ notes }: { notes: Note[] }) => {
             </head>
             <body>
                 <Widget notes={notes} />
-                <script type="module">{`
+                <script type="module">
+                    {raw(`
         const deleteNote = (noteId) => {
             const deleteEndPoint = location.href.replace("/widget", "/" + noteId);
             return fetch(deleteEndPoint, {
@@ -64,7 +65,8 @@ export const HTML = ({ notes }: { notes: Note[] }) => {
                 target.remove();
             }
         }, true);
-      `}</script>
+      `)}
+                </script>
             </body>
         </html>
     );
