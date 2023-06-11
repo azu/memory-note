@@ -58,7 +58,8 @@ const newMemoryNote = (c: Context) => {
                 NOTION_DATABASE_ID: c.env.NOTION_DATABASE_ID,
                 NOTION_MESSAGE_PROPERTY_NAME: c.env.NOTION_MESSAGE_PROPERTY_NAME,
                 NOTION_LIST_PROPERTY_NAME: c.env.NOTION_LIST_PROPERTY_NAME,
-                NOTION_LIST_TYPE: c.env.NOTION_LIST_TYPE
+                NOTION_LIST_TYPE: c.env.NOTION_LIST_TYPE,
+                NOTION_CHECKBOX_PROPERTY_NAME: c.env.NOTION_CHECKBOX_PROPERTY_NAME
             })
         });
     } else if (backendService === "cloudflare") {
@@ -90,9 +91,6 @@ app.get("/notes/:listId", async (c) => {
 });
 app.get("/notes/:listId/widget", async (c) => {
     const key = c.req.param("listId");
-    console.log({
-        key
-    });
     const limitValue = Number(c.req.query("limit")) || 10;
     if (limitValue < 0 || limitValue > 50) {
         return c.text("invalid limit: 0 ~ 50", 400);
