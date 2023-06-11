@@ -194,6 +194,17 @@ Example:
 $ curl https://example-memory-note.worker.dev/notes/11111?token=random-password
 ```
 
+### `GET /notes/:listId/txt`
+
+txt version of `/notes/:listId`.
+The response is like following:
+
+```
+note
+note
+note
+```
+
 ### `GET /notes/:listId/widget`
 
 Return simple html page for widgets.

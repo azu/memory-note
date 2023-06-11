@@ -89,6 +89,15 @@ app.get("/notes/:listId", async (c) => {
     const notes = await newMemoryNote(c).readNotes(key, limitValue);
     return c.json(notes, 200);
 });
+app.get("/notes/:listId/txt", async (c) => {
+    const key = c.req.param("listId");
+    const limitValue = Number(c.req.query("limit")) || 10;
+    if (limitValue < 0 || limitValue > 50) {
+        return c.text("invalid limit: 0 ~ 50", 400);
+    }
+    const notes = await newMemoryNote(c).readNotes(key, limitValue);
+    return c.text(notes.map((note) => note.message).join("\n"), 200);
+});
 app.get("/notes/:listId/widget", async (c) => {
     const key = c.req.param("listId");
     const limitValue = Number(c.req.query("limit")) || 10;
