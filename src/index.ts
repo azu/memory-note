@@ -54,7 +54,10 @@ const newMemoryNote = (c: Context) => {
         return createMemoryNote({
             storage: createNotionStorage({
                 NOTION_API_TOKEN: c.env.NOTION_TOKEN,
-                NOTION_DATABASE_ID: c.env.NOTION_DATABASE_ID
+                NOTION_DATABASE_ID: c.env.NOTION_DATABASE_ID,
+                NOTION_MESSAGE_PROPERTY_NAME: c.env.NOTION_MESSAGE_PROPERTY_NAME,
+                NOTION_LIST_PROPERTY_NAME: c.env.NOTION_LIST_PROPERTY_NAME,
+                NOTION_LIST_TYPE: c.env.NOTION_LIST_TYPE
             })
         });
     } else if (backendService === "cloudflare") {
