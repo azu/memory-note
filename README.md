@@ -60,6 +60,7 @@ Currently, Memory Note supports following backend:
 
 - `cloudflare`: Cloudflare Workers KV
 - `github`: GitHub Project Board
+- `notion`: Notion
 
 You can choose a backend.
 
@@ -148,6 +149,23 @@ Visit `https://dash.cloudflare.com/{your account id}/workers/view/memory-note/se
 For example, if you have used `https://github.com/your/my-note/projects/1` repo, you need to set `GITHUB_OWNER=your` and `GITHUB_REPO=my-note`, and `GITHUB_PROJECT_ID=1`.
 
 ![github-env](docs/img/github-env.png)
+
+### Notion backend
+
+You need to create Notion Database and Get your Notion API Token
+
+- `NOTION_TOKEN`="<NOTION API TOKEN>"
+- `NOTION_DATABASE_ID`="<NOTION DATABASE ID>"
+- `NOTION_MESSAGE_PROPERTY_NAME`="<TITLE property Name>"
+
+Optional:
+
+- `NOTION_LIST_PROPERTY_NAME`="<Relational Property Name>"
+- `NOTION_LIST_TYPE`="relation" or "select"
+
+NOTION_LIST_VALUE is `:listId`
+
+`/notes/:listId` refer the `NOTION_LIST_PROPERTY_NAME`'s value.
 
 ## API
 

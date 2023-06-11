@@ -2,7 +2,7 @@
   "name": "memory-note",
   "version": "1.0.0",
   "description": "Fast memory-note on cloudflare worker",
-  "main": "dist/worker.js",
+  "main": "./src/index.tsx",
   "repository": "azu/memory-note",
   "keywords": [
     "note",
@@ -12,38 +12,29 @@
     "API"
   ],
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "webpack --mode production",
+    "dev": "wrangler dev ./src/index.tsx",
     "type-check": "tsc",
-    "watch": "webpack --watch",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "test": "npm run type-check",
     "prepare": "git config --local core.hooksPath .githooks",
-    "deploy": "npm run build && wrangler publish"
+    "deploy": "npm run build && wrangler deploy ./src/index.tsx"
   },
   "author": "author",
   "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^2.2.2",
-    "@types/react": "^17.0.20",
-    "@types/react-dom": "^17.0.9",
-    "@types/service-worker-mock": "^2.0.1",
+    "@types/react": "^18.2.11",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
-    "service-worker-mock": "^2.0.5",
-    "ts-jest": "^27.0.1",
-    "ts-loader": "^9.2.2",
-    "typescript": "^4.3.2",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0"
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.1.3",
+    "wrangler": "^3.0.1"
   },
   "dependencies": {
     "@cfworker/uuid": "^1.8.3",
+    "@notionhq/client": "^2.2.5",
     "@octokit/core": "^3.5.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "sunder": "^0.7.2",
-    "worktop": "^0.7.1"
+    "hono": "^3.2.3"
   },
   "prettier": {
     "singleQuote": false,
