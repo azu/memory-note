@@ -49,17 +49,11 @@ const newMemoryNote = (c: Context) => {
         if (!c.env.NOTION_TOKEN) {
             throw new Error("NOTION_TOKEN is not defined");
         }
-        if (!c.env.NOTION_DATABASE_ID) {
-            throw new Error("NOTION_DATABASE_ID is not defined");
-        }
         return createMemoryNote({
             storage: createNotionStorage({
                 NOTION_API_TOKEN: c.env.NOTION_TOKEN,
-                NOTION_DATABASE_ID: c.env.NOTION_DATABASE_ID,
                 NOTION_MESSAGE_PROPERTY_NAME: c.env.NOTION_MESSAGE_PROPERTY_NAME,
-                NOTION_LIST_PROPERTY_NAME: c.env.NOTION_LIST_PROPERTY_NAME,
-                NOTION_LIST_TYPE: c.env.NOTION_LIST_TYPE,
-                NOTION_CHECKBOX_PROPERTY_NAME: c.env.NOTION_CHECKBOX_PROPERTY_NAME
+                NOTION_FILTER_OPTIONS: c.env.NOTION_FILTER_OPTIONS
             })
         });
     } else if (backendService === "cloudflare") {

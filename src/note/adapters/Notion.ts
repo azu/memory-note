@@ -2,20 +2,29 @@ import { AppendNote, Note, StorageAdapter } from "../StorageAdapter";
 import { Client } from "@notionhq/client";
 import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 
+// :listId is notion database id
 export type createNotionDatabaseSimple = {
     NOTION_API_TOKEN: string;
-    NOTION_DATABASE_ID: string;
     // title property name
     NOTION_MESSAGE_PROPERTY_NAME: string; // should be title
 };
-// list value is :listId param value
+export type NotionFilterOption = {
+    name: string;
+    type: "select" | "relation" | "checkbox";
+    value: string;
+};
 export type createNotionDatabaseExtended = createNotionDatabaseSimple & {
-    // list property name
-    NOTION_LIST_PROPERTY_NAME: string;
-    // list property type
-    NOTION_LIST_TYPE: "select" | "relation";
-    // filter property name by checkbox
-    NOTION_CHECKBOX_PROPERTY_NAME: string;
+    // json value as a string
+    // NotionFilterOption[] (and)
+    // example: '[{"name":"category","type":"select","value":"test"},{"name":"category","type":"checkbox","value":false}]'
+    NOTION_FILTER_OPTIONS: string;
+};
+const parseNotionFilterOption = (optionStr: string) => {
+    try {
+        return JSON.parse(optionStr) as NotionFilterOption[];
+    } catch (e) {
+        throw new Error("invalid NOTION_FILTER_OPTIONS:" + optionStr);
+    }
 };
 export type createNotionDatabaseOptions = createNotionDatabaseSimple | createNotionDatabaseExtended;
 type PropertyTypes = ExtractRecordValue<PageObjectResponse["properties"]>;
@@ -28,25 +37,13 @@ export const prop = <F extends PropertyTypes, T extends F["type"]>(o: F, type: T
 };
 
 export const createNotionStorage = (options: createNotionDatabaseOptions): StorageAdapter => {
-    const { NOTION_API_TOKEN, NOTION_DATABASE_ID, NOTION_MESSAGE_PROPERTY_NAME } = options;
+    const { NOTION_API_TOKEN, NOTION_MESSAGE_PROPERTY_NAME } = options;
     const notionClient = new Client({
         auth: NOTION_API_TOKEN
     });
     const notionMessagePropertyName = NOTION_MESSAGE_PROPERTY_NAME;
     if (!notionMessagePropertyName)
         throw new Error("invalid NOTION_MESSAGE_PROPERTY_NAME:" + notionMessagePropertyName);
-    const notionListOption = (() => {
-        if (!("NOTION_LIST_PROPERTY_NAME" in options)) return undefined;
-        const { NOTION_LIST_PROPERTY_NAME, NOTION_LIST_TYPE } = options as createNotionDatabaseExtended;
-        const notionListType = NOTION_LIST_TYPE;
-        if (!notionListType) throw new Error("invalid NOTION_LIST_TYPE:" + notionListType);
-        const notionListPropertyName = NOTION_LIST_PROPERTY_NAME;
-        if (!notionListPropertyName) throw new Error("invalid NOTION_LIST_PROPERTY_NAME:" + notionListPropertyName);
-        return {
-            type: notionListType,
-            name: notionListPropertyName
-        };
-    })();
 
     const notionCheckboxOption = (() => {
         if (!("NOTION_CHECKBOX_PROPERTY_NAME" in options)) return undefined;
@@ -55,49 +52,44 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
         };
     })();
     return {
-        async getNotes(listId: string): Promise<Note[]> {
-            const notionListFilter = (() => {
-                if (!notionListOption) return undefined;
-                if (notionListOption?.type === "select") {
+        async getNotes(databaseId: string): Promise<Note[]> {
+            const notionFilterOptions =
+                "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
+            const convertToFilter = (option: NotionFilterOption) => {
+                if (option?.type === "select") {
                     return {
-                        property: notionListOption?.name,
+                        property: option?.name,
                         select: {
-                            equals: listId
+                            equals: option?.value
                         }
                     };
-                } else if (notionListOption?.type === "relation") {
+                } else if (option?.type === "relation") {
                     return {
-                        property: notionListOption?.name,
+                        property: option?.name,
                         relation: {
-                            contains: listId
+                            contains: option?.value
+                        }
+                    };
+                } else if (option?.type === "checkbox") {
+                    return {
+                        property: option?.name,
+                        checkbox: {
+                            equals: Boolean(option?.value)
                         }
                     };
                 }
-                throw new Error("invalid NOTION_LIST_TYPE:" + notionListOption?.type);
-            })();
-            const notionCheckboxFilter = (() => {
-                if (!notionCheckboxOption) return undefined;
+                throw new Error("not supported filter option:" + option?.type);
+            };
+            const filter = (() => {
+                if (!notionFilterOptions) return undefined;
+                if (notionFilterOptions.length === 0) return undefined;
+                if (notionFilterOptions.length === 1) return convertToFilter(notionFilterOptions[0]);
                 return {
-                    property: notionCheckboxOption.name,
-                    checkbox: {
-                        equals: false // unchecked
-                    }
+                    and: notionFilterOptions.map(convertToFilter)
                 };
             })();
-            const filter = (() => {
-                if (notionListFilter && notionCheckboxFilter) {
-                    return {
-                        and: [notionListFilter, notionCheckboxFilter]
-                    };
-                } else if (notionListFilter) {
-                    return notionListFilter;
-                } else if (notionCheckboxFilter) {
-                    return notionCheckboxFilter;
-                }
-                return undefined;
-            })();
             const { results } = await notionClient.databases.query({
-                database_id: NOTION_DATABASE_ID,
+                database_id: databaseId,
                 filter: filter ? filter : undefined
             });
             return results.map((page) => {
@@ -109,32 +101,35 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 };
             });
         },
-        async appendNote(listId: string, note: AppendNote): Promise<Note> {
-            const notionListProperty = (() => {
-                if (notionListOption?.type === "select") {
+        async appendNote(databaseId: string, note: AppendNote): Promise<Note> {
+            const notionFilterOptions =
+                "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
+            const convertProperty = (option: NotionFilterOption) => {
+                if (option?.type === "select") {
                     return {
-                        [notionListOption?.name]: {
+                        [option?.name]: {
                             select: {
-                                name: listId
+                                name: option?.value
                             }
                         }
                     };
-                } else if (notionListOption?.type === "relation") {
+                } else if (option?.type === "relation") {
                     return {
-                        [notionListOption?.name]: {
+                        [option?.name]: {
                             relation: [
                                 {
-                                    id: listId
+                                    id: option?.value
                                 }
                             ]
                         }
                     };
                 }
-                throw new Error("invalid NOTION_LIST_TYPE:" + notionListOption?.type);
-            })();
+                throw new Error("non supported filter option" + option?.type);
+            };
+            const filterProperties = notionFilterOptions ? notionFilterOptions.map(convertProperty) : [];
             const result = (await notionClient.pages.create({
                 parent: {
-                    database_id: NOTION_DATABASE_ID
+                    database_id: databaseId
                 },
                 properties: {
                     [notionMessagePropertyName]: {
@@ -146,7 +141,7 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                             }
                         ]
                     },
-                    ...(notionListOption ? notionListProperty : {})
+                    ...(filterProperties ? filterProperties : {})
                 }
             })) as PageObjectResponse;
             return {

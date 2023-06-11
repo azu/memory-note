@@ -9,7 +9,7 @@
 <button id='read-range'>Read Recent</button>
 <div id='output'></div>
 <script type='module'>
-    const token = new URL(location.href).searchParams.get('token')
+    const token = new URL(location.href).searchParams.get('token') ?? "test"
     document.querySelector('#read-range').addEventListener('click', async () => {
         const items = await fetch(`http://127.0.0.1:8787/notes/inbox?limit=10&token=${token}`).then(res => res.json())
         const output = document.querySelector('#output')
