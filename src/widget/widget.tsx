@@ -1,8 +1,8 @@
-import React, { HTMLAttributes, useCallback } from "react";
+import React, { HTMLAttributes } from "react";
 import { FC } from "react";
 import { Note } from "../note/StorageAdapter";
 
-const List: FC<HTMLAttributes<HTMLUListElement>> = ({ children, ...props }) => {
+const List = ({ children, ...props }: HTMLAttributes<HTMLUListElement>) => {
     return (
         <ul
             style={{
@@ -19,7 +19,7 @@ const List: FC<HTMLAttributes<HTMLUListElement>> = ({ children, ...props }) => {
         </ul>
     );
 };
-const ListItem: FC<{ note: Note }> = ({ note }) => {
+const ListItem = ({ note }: { note: Note }) => {
     return (
         <li style={{ borderBottom: "1px dotted #ddd", padding: "2px 0", cursor: "pointer" }} data-note-id={note.id}>
             {note.message}
@@ -29,7 +29,7 @@ const ListItem: FC<{ note: Note }> = ({ note }) => {
 export type WidgetProps = {
     notes: Note[];
 };
-export const Widget: FC<WidgetProps> = ({ notes }) => {
+export const Widget = ({ notes }: WidgetProps) => {
     return (
         <div id={"app"}>
             <div
