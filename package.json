@@ -2,7 +2,7 @@
   "name": "memory-note",
   "version": "1.0.0",
   "description": "Fast memory-note on cloudflare worker",
-  "main": "dist/worker.js",
+  "main": "./src/index.tsx",
   "repository": "azu/memory-note",
   "keywords": [
     "note",
@@ -12,12 +12,12 @@
     "API"
   ],
   "scripts": {
-    "dev": "wrangler dev src/index.tsx",
+    "dev": "wrangler dev ./src/index.tsx",
     "type-check": "tsc",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "test": "npm run type-check",
     "prepare": "git config --local core.hooksPath .githooks",
-    "deploy": "npm run build && wrangler publish"
+    "deploy": "npm run build && wrangler deploy ./src/index.tsx"
   },
   "author": "author",
   "license": "MIT",
