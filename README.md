@@ -162,6 +162,7 @@ Optional:
 
 - `NOTION_LIST_PROPERTY_NAME`="<Relational Property Name>"
 - `NOTION_LIST_TYPE`="relation" or "select"
+- `NOTION_CHECKBOX_PROPERTY_NAME`= "<Checkbox Property Name>"
 
 NOTION_LIST_VALUE is `:listId`
 

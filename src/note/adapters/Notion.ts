@@ -14,6 +14,8 @@ export type createNotionDatabaseExtended = createNotionDatabaseSimple & {
     NOTION_LIST_PROPERTY_NAME: string;
     // list property type
     NOTION_LIST_TYPE: "select" | "relation";
+    // filter property name by checkbox
+    NOTION_CHECKBOX_PROPERTY_NAME: string;
 };
 export type createNotionDatabaseOptions = createNotionDatabaseSimple | createNotionDatabaseExtended;
 type PropertyTypes = ExtractRecordValue<PageObjectResponse["properties"]>;
@@ -45,9 +47,17 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
             name: notionListPropertyName
         };
     })();
+
+    const notionCheckboxOption = (() => {
+        if (!("NOTION_CHECKBOX_PROPERTY_NAME" in options)) return undefined;
+        return {
+            name: options.NOTION_CHECKBOX_PROPERTY_NAME
+        };
+    })();
     return {
         async getNotes(listId: string): Promise<Note[]> {
-            const filter = (() => {
+            const notionListFilter = (() => {
+                if (!notionListOption) return undefined;
                 if (notionListOption?.type === "select") {
                     return {
                         property: notionListOption?.name,
@@ -65,9 +75,30 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 }
                 throw new Error("invalid NOTION_LIST_TYPE:" + notionListOption?.type);
             })();
+            const notionCheckboxFilter = (() => {
+                if (!notionCheckboxOption) return undefined;
+                return {
+                    property: notionCheckboxOption.name,
+                    checkbox: {
+                        equals: false // unchecked
+                    }
+                };
+            })();
+            const filter = (() => {
+                if (notionListFilter && notionCheckboxFilter) {
+                    return {
+                        and: [notionListFilter, notionCheckboxFilter]
+                    };
+                } else if (notionListFilter) {
+                    return notionListFilter;
+                } else if (notionCheckboxFilter) {
+                    return notionCheckboxFilter;
+                }
+                return undefined;
+            })();
             const { results } = await notionClient.databases.query({
                 database_id: NOTION_DATABASE_ID,
-                filter: notionListOption ? filter : undefined
+                filter: filter ? filter : undefined
             });
             return results.map((page) => {
                 const ret = page as PageObjectResponse;
