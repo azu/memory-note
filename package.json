@@ -12,7 +12,7 @@
     "API"
   ],
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
+    "dev": "wrangler dev src/index.tsx",
     "type-check": "tsc",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "test": "npm run type-check",
@@ -23,12 +23,8 @@
   "license": "MIT",
   "devDependencies": {
     "@cloudflare/workers-types": "^2.2.2",
-    "@types/react": "^17.0.20",
-    "@types/react-dom": "^17.0.9",
-    "@types/service-worker-mock": "^2.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2",
-    "service-worker-mock": "^2.0.5",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
     "wrangler": "^3.0.1"
@@ -37,10 +33,7 @@
     "@cfworker/uuid": "^1.8.3",
     "@notionhq/client": "^2.2.5",
     "@octokit/core": "^3.5.1",
-    "hono": "^3.2.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "worktop": "^0.7.3"
+    "hono": "^3.2.3"
   },
   "prettier": {
     "singleQuote": false,

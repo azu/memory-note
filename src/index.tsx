@@ -3,7 +3,8 @@ import { cors } from "hono/cors";
 import { createMemoryNote, NoteArguments } from "./note/Note";
 import { createGitHubProjectStorage } from "./note/adapters/GitHubProject";
 import { createCloudflareStorage } from "./note/adapters/cloudflare";
-import { render } from "./widget/render";
+import { jsx } from "hono/jsx";
+import { HTML } from "./widget/render";
 import { createNotionStorage } from "./note/adapters/Notion";
 
 declare var MEMORY_NOTE_TOKEN: string;
@@ -97,10 +98,7 @@ app.get("/notes/:listId/widget", async (c) => {
         return c.text("invalid limit: 0 ~ 50", 400);
     }
     const notes = await newMemoryNote(c).readNotes(key, limitValue);
-    const html = await render({ notes });
-    return c.text(html, 200, {
-        "Content-Type": "text/html; charset=UTF-8"
-    });
+    return c.html(<HTML notes={notes} />);
 });
 app.post("/notes/:listId/new", async (c) => {
     const key = c.req.param("listId");

@@ -14,6 +14,7 @@
       "node"
     ],
     "jsx": "react-jsx",
+    "jsxFragmentFactory": "Fragment",
     "jsxImportSource": "hono/jsx"
   },
 }
