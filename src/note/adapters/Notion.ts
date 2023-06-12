@@ -150,6 +150,7 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 },
                 ...(filterProperties ? filterProperties : {})
             };
+            console.log("create to database_id", databaseId);
             console.log("create properties", JSON.stringify(properties, null, 4));
             const result = (await notionClient.pages.create({
                 parent: {
