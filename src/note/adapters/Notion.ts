@@ -106,44 +106,58 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
             const convertProperty = (option: NotionFilterOption) => {
                 if (option?.type === "select") {
-                    return {
-                        [option?.name]: {
+                    return [
+                        option?.name,
+                        {
                             select: {
                                 name: option?.value
                             }
                         }
-                    };
+                    ];
                 } else if (option?.type === "relation") {
-                    return {
-                        [option?.name]: {
+                    return [
+                        option?.name,
+                        {
                             relation: [
                                 {
                                     id: option?.value
                                 }
                             ]
                         }
-                    };
+                    ];
+                } else if (option?.type === "checkbox") {
+                    return [
+                        option?.name,
+                        {
+                            checkbox: Boolean(option?.value)
+                        }
+                    ];
                 }
                 throw new Error("non supported filter option" + option?.type);
             };
-            const filterProperties = notionFilterOptions ? notionFilterOptions.map(convertProperty) : [];
+            const filterProperties = notionFilterOptions
+                ? Object.fromEntries(notionFilterOptions.map(convertProperty))
+                : [];
+            const properties = {
+                [notionMessagePropertyName]: {
+                    title: [
+                        {
+                            text: {
+                                content: note.message
+                            }
+                        }
+                    ]
+                },
+                ...(filterProperties ? filterProperties : {})
+            };
+            console.log("create properties", JSON.stringify(properties, null, 4));
             const result = (await notionClient.pages.create({
                 parent: {
                     database_id: databaseId
                 },
-                properties: {
-                    [notionMessagePropertyName]: {
-                        title: [
-                            {
-                                text: {
-                                    content: note.message
-                                }
-                            }
-                        ]
-                    },
-                    ...(filterProperties ? filterProperties : {})
-                }
+                properties: properties
             })) as PageObjectResponse;
+            console.log("create result", JSON.stringify(result, null, 4));
             return {
                 id: result.id,
                 message: note.message,
