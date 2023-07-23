@@ -167,6 +167,12 @@ You need to pass Notion Database ID as `:listId` value of API endpoint.
 - `GET /notes/<NOTION_DATABASE_ID>`
 - `POST /notes/<NOTION_DATABASE_ID>/new`
 
+````
+https://www.notion.so/myworkspace/a8aec43384f447ed84390e8e42c2e089?v=...
+                                  | --------- Database ID --------|
+````
+
+
 Optional:
 
 - `NOTION_FILTER_OPTIONS`=`'{"name":"<PROPERTY_NAME>","type": "type": "<PROPERTY_TYPE>", "value":"<PROPERTY_VALUE>"}'`
@@ -185,12 +191,12 @@ export type NotionFilterOption = {
 Examples:
 
 ```
-# filter catery and checkbox
+# filter category and checkbox
 NOTION_FILTER_OPTIONS='[{"name":"category","type":"select","value":"test"},{"name":"done","type":"checkbox","value":false}]'
 ```
 
 ```
-# filter catery and checkbox
+# filter category and checkbox
 NOTION_FILTER_OPTIONS='[{"name":"ref","type":"relation","value":"xxxx-id--id"},{"name":"done","type":"checkbox","value":false}]'
 ```
 
