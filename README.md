@@ -169,7 +169,7 @@ You need to pass Notion Database ID as `:listId` value of API endpoint.
 
 Optional:
 
-- `NOTION_FILTER_OPTIONS`='{"name":"<PROPERTY_NAME>","type": "type": "<PROPERTY_TYPE>", "value":"<PROPERTY_VALUE>"}'
+- `NOTION_FILTER_OPTIONS`=`'{"name":"<PROPERTY_NAME>","type": "type": "<PROPERTY_TYPE>", "value":"<PROPERTY_VALUE>"}'`
 
 `NOTION_FILTER_OPTIONS` is a JSON string of `NotionFilterOption[]`.
 It will filter notes by `PROPERTY_NAME` and `PROPERTY_VALUE`.
