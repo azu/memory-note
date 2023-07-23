@@ -159,8 +159,8 @@ and `GITHUB_REPO=my-note`, and `GITHUB_PROJECT_ID=1`.
 
 You need to create Notion Database and Get your Notion API Token
 
-- `NOTION_TOKEN`="<NOTION API TOKEN>"
-- `NOTION_MESSAGE_PROPERTY_NAME`="<TITLE property Name>"
+- `NOTION_TOKEN`=`"<NOTION API TOKEN>"`
+- `NOTION_MESSAGE_PROPERTY_NAME`=`"<TITLE property Name>"`
 
 You need to pass Notion Database ID as `:listId` value of API endpoint.
 
