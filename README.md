@@ -181,11 +181,24 @@ Optional:
 It will filter notes by `PROPERTY_NAME` and `PROPERTY_VALUE`.
 
 ```ts
-export type NotionFilterOption = {
-    name: string;
-    type: 'select' | 'relation' | 'checkbox';
-    value: string;
+export type NotionFilterOption =
+        | {
+  name: string;
+  type: "checkbox";
+  value: string;
 }
+        | {
+  name: string;
+  type: "relation";
+  value: string;
+}
+        | {
+  name: string;
+  type: "select";
+  value: string;
+  op?: "equals" | "does_not_equal";
+};
+
 ```
 
 Examples:
