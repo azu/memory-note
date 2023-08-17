@@ -8,11 +8,23 @@ export type createNotionDatabaseSimple = {
     // title property name
     NOTION_MESSAGE_PROPERTY_NAME: string; // should be title
 };
-export type NotionFilterOption = {
-    name: string;
-    type: "select" | "relation" | "checkbox";
-    value: string;
-};
+export type NotionFilterOption =
+    | {
+          name: string;
+          type: "checkbox";
+          value: string;
+      }
+    | {
+          name: string;
+          type: "relation";
+          value: string;
+      }
+    | {
+          name: string;
+          type: "select";
+          value: string;
+          op?: "equals" | "does_not_equal";
+      };
 export type createNotionDatabaseExtended = createNotionDatabaseSimple & {
     // json value as a string
     // NotionFilterOption[] (and)
@@ -56,25 +68,37 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
             const notionFilterOptions =
                 "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
             const convertToFilter = (option: NotionFilterOption) => {
-                if (option?.type === "select") {
+                if (!option) throw new Error("invalid option");
+                if (option?.value !== undefined) throw new Error("invalid option value");
+                if (option?.name !== undefined) throw new Error("invalid option name");
+                if (option.type === "select") {
+                    if (!option.op || option.op === "equals") {
+                        return {
+                            property: option.name,
+                            select: {
+                                equals: option.value
+                            }
+                        };
+                    } else if (option.op === "does_not_equal") {
+                        return {
+                            property: option.name,
+                            select: {
+                                does_not_equal: option.value
+                            }
+                        };
+                    }
+                } else if (option.type === "relation") {
                     return {
-                        property: option?.name,
-                        select: {
-                            equals: option?.value
-                        }
-                    };
-                } else if (option?.type === "relation") {
-                    return {
-                        property: option?.name,
+                        property: option.name,
                         relation: {
-                            contains: option?.value
+                            contains: option.value
                         }
                     };
-                } else if (option?.type === "checkbox") {
+                } else if (option.type === "checkbox") {
                     return {
-                        property: option?.name,
+                        property: option.name,
                         checkbox: {
-                            equals: Boolean(option?.value)
+                            equals: Boolean(option.value)
                         }
                     };
                 }
