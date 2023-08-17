@@ -24,6 +24,12 @@ export type NotionFilterOption =
           type: "select";
           value: string;
           op?: "equals" | "does_not_equal";
+      }
+    | {
+          name: string;
+          type: "status";
+          value: string;
+          op?: "equals" | "does_not_equal";
       };
 export type createNotionDatabaseExtended = createNotionDatabaseSimple & {
     // json value as a string
@@ -71,7 +77,7 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 if (!option) throw new Error("invalid option");
                 if (option?.value !== undefined) throw new Error("invalid option value");
                 if (option?.name !== undefined) throw new Error("invalid option name");
-                if (option.type === "select") {
+                if (option.type === "select" || option.type === "status") {
                     if (!option.op || option.op === "equals") {
                         return {
                             property: option.name,
