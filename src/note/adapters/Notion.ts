@@ -77,7 +77,7 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 if (!option) throw new Error("invalid option");
                 if (option?.value !== undefined) throw new Error("invalid option value");
                 if (option?.name !== undefined) throw new Error("invalid option name");
-                if (option.type === "select" || option.type === "status") {
+                if (option.type === "select") {
                     if (!option.op || option.op === "equals") {
                         return {
                             property: option.name,
@@ -89,6 +89,22 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                         return {
                             property: option.name,
                             select: {
+                                does_not_equal: option.value
+                            }
+                        };
+                    }
+                } else if (option.type === "status") {
+                    if (!option.op || option.op === "equals") {
+                        return {
+                            property: option.name,
+                            status: {
+                                equals: option.value
+                            }
+                        };
+                    } else if (option.op === "does_not_equal") {
+                        return {
+                            property: option.name,
+                            status: {
                                 does_not_equal: option.value
                             }
                         };
