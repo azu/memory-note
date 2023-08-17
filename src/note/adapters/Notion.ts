@@ -75,8 +75,8 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                 "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
             const convertToFilter = (option: NotionFilterOption) => {
                 if (!option) throw new Error("invalid option");
-                if (option?.value !== undefined) throw new Error("invalid option value");
-                if (option?.name !== undefined) throw new Error("invalid option name");
+                if (option?.value === undefined) throw new Error("invalid option value");
+                if (option?.name === undefined) throw new Error("invalid option name");
                 if (option.type === "select") {
                     if (!option.op || option.op === "equals") {
                         return {
