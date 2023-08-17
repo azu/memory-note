@@ -214,7 +214,7 @@ NOTION_FILTER_OPTIONS='[{"name":"category","type":"select","value":"test"},{"nam
 ```
 
 ```
-# filter category and checkbox
+# filter relation and checkbox
 NOTION_FILTER_OPTIONS='[{"name":"ref","type":"relation","value":"xxxx-id--id"},{"name":"done","type":"checkbox","value":false}]'
 ```
 
