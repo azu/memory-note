@@ -3,7 +3,6 @@ import { cors } from "hono/cors";
 import { createMemoryNote, NoteArguments } from "./note/Note";
 import { createGitHubProjectStorage } from "./note/adapters/GitHubProject";
 import { createCloudflareStorage } from "./note/adapters/cloudflare";
-import { jsx } from "hono/jsx";
 import { HTML } from "./widget/render";
 import { createNotionStorage } from "./note/adapters/Notion";
 
@@ -146,6 +145,10 @@ app.delete("/notes/:listId/:noteId", async (c) => {
     }
     await newMemoryNote(c).deleteNote(key, noteId);
     return c.json({ ok: true }, 200);
+});
+app.onError((err, c) => {
+    console.error(err);
+    return c.text("Server Error", 500);
 });
 
 export default app;
