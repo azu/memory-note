@@ -151,7 +151,10 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
             const notionFilterOptions =
                 "NOTION_FILTER_OPTIONS" in options ? parseNotionFilterOption(options.NOTION_FILTER_OPTIONS) : undefined;
             const convertProperty = (option: NotionFilterOption) => {
-                if (option?.type === "select") {
+                if (option.type === "select") {
+                    if (option?.op === "does_not_equal") {
+                        return []; // use default value
+                    }
                     return [
                         option?.name,
                         {
@@ -159,7 +162,19 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                                 name: option?.value
                             }
                         }
-                    ];
+                    ] as const;
+                } else if (option.type === "status") {
+                    if (option?.op === "does_not_equal") {
+                        return []; // use default value
+                    }
+                    return [
+                        option?.name,
+                        {
+                            status: {
+                                name: option?.value
+                            }
+                        }
+                    ] as const;
                 } else if (option?.type === "relation") {
                     return [
                         option?.name,
@@ -170,19 +185,23 @@ export const createNotionStorage = (options: createNotionDatabaseOptions): Stora
                                 }
                             ]
                         }
-                    ];
+                    ] as const;
                 } else if (option?.type === "checkbox") {
                     return [
                         option?.name,
                         {
                             checkbox: Boolean(option?.value)
                         }
-                    ];
+                    ] as const;
                 }
-                throw new Error("non supported filter option" + option?.type);
+                throw new Error("non supported filter option: " + (option as { type: "__invalid__" })?.type);
             };
             const filterProperties = notionFilterOptions
-                ? Object.fromEntries(notionFilterOptions.map(convertProperty))
+                ? Object.fromEntries(
+                      notionFilterOptions.map((option) => {
+                          return convertProperty(option);
+                      })
+                  )
                 : [];
             const properties = {
                 [notionMessagePropertyName]: {
